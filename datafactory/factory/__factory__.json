@@ -1,0 +1,16 @@
+{
+	"name": "__factory__",
+	"properties": {
+		"globalParameters": {
+			"ENV": {
+				"type": "string",
+				"value": "dev"
+			},
+			"GIT_BRANCH": {
+				"type": "string",
+				"value": "master"
+			}
+		}
+	},
+	"location": "westeurope"
+}

@@ -1,0 +1,36 @@
+name: pipeline
+on:
+  push:
+  schedule:
+    - cron: "0 6 * * *"
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: conda-incubator/setup-miniconda@v2.0.0
+        with:
+          miniconda-version: 'py38_4.8.3'
+      - name: setup
+        run: |
+          cp .env.dist .env
+          sed -i 's/DBX_TOKEN=/DBX_TOKEN=abcdefgh123456789/g' .env # remove DBX_TOKEN env var from .env
+          export SHELL=$SHELL # for python to be able to access the bash version
+          ./env-init.sh -y --verbose
+      - name: linting
+        run: |
+          eval "$(conda shell.bash hook)"
+          conda activate $PWD/.venv
+          source ~/.poetry/env
+          poe black-check
+          poe flake8
+      - name: containerChecks
+        run: |
+          eval "$(conda shell.bash hook)"
+          conda activate $PWD/.venv
+          source ~/.poetry/env
+          ~/.poetry/bin/poetry install --no-root --no-dev # remove all dev dependencies
+          pip install databricks-connect==7.3.7 # pyspark is still needed
+          pip install poethepoet
+          poe container-check

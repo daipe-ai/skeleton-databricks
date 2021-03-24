@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*egg-info
+.venv
+dist/*
+build
+.DS_Store
+*-checkpoint.ipynb
+.idea/workspace.xml
+.env
+!.gitkeep

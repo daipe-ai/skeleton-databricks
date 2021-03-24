@@ -1,0 +1,3 @@
+parameters:
+  datalake:
+    base_path: '/%kernel.environment%'

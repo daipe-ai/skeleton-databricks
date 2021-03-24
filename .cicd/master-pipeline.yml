@@ -1,0 +1,120 @@
+resources:
+  repositories:
+    - repository: adi
+      type: git
+      name: adi
+
+variables:
+  # read main variables from infra variables definition
+  - template: .cicd/variables/variables.yml@adi
+  # defined variables
+  # run number
+  - name: Build.Version
+    value:  $[counter(0)]
+  # current branch name based on head
+  - name: CURRENT_BRANCH
+    ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
+      value: $[ replace(variables['Build.SourceBranch'], 'refs/heads/', '') ]
+    ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
+      value: $[ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') ]
+
+# build name based on pipeline name, source branch, date and run number
+name: "$(BuildDefinitionName)_$(SourceBranchName)_$(date:yyyyMMdd).$(Build.Version)"
+
+trigger:
+  branches:
+    include:
+      - master
+      - feature-*
+      - hotfix-*
+
+stages:
+  - stage: DataFactoryCI
+    dependsOn: []
+    displayName: Build & Test Data Factory
+    jobs:
+      - template: templates/datafactory-ci.yml
+
+  - stage: DataFactoryCDdev
+    displayName: Deploy Data Factory to dev environment
+    dependsOn: DataFactoryCI
+    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
+    variables:
+      - template: .cicd/variables/variables-dev.yml@adi
+    jobs:
+      - template: templates/datafactory-cd.yml
+        parameters:
+          serviceConnectionName: '$(SERVICE_CONNECTION_NAME_DEV)'
+          environmentName: 'dev'
+
+  - stage: DataFactoryCDtest
+    displayName: Deploy Data Factory to test environment
+    dependsOn: DataFactoryCI
+    condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+    variables:
+      - template: .cicd/variables/variables-test.yml@adi
+    jobs:
+      - template: templates/datafactory-cd.yml
+        parameters:
+          serviceConnectionName: '$(SERVICE_CONNECTION_NAME_TEST)'
+          environmentName: 'test'
+
+  - stage: DataFactoryCDprod
+    displayName: Deploy Data Factory to prod environment
+    dependsOn: DataFactoryCDdev
+    # build version condition to prevent running prod stage on init commit
+    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'), ne(variables['Build.Version'], 0))
+    variables:
+      - template: .cicd/variables/variables-prod.yml@adi
+    jobs:
+      - template: templates/datafactory-cd.yml
+        parameters:
+          serviceConnectionName: '$(SERVICE_CONNECTION_NAME_PROD)'
+          environmentName: 'prod'
+
+  - stage: DaipeCI
+    dependsOn: []
+    displayName: Build & Test Daipe
+    variables:
+      - template: .cicd/variables/variables-dev.yml@adi
+    jobs:
+      - template: templates/daipe-ci.yml
+        parameters:
+          serviceConnectionName: '$(SERVICE_CONNECTION_NAME_DEV)'
+
+  - stage: DaipeCDdev
+    displayName: Deploy Daipe to dev environment
+    dependsOn: DaipeCI
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    variables:
+      - template: .cicd/variables/variables-dev.yml@adi
+    jobs:
+      - template: templates/daipe-cd.yml
+        parameters:
+          serviceConnectionName: '$(SERVICE_CONNECTION_NAME_DEV)'
+          environmentName: 'dev'
+
+  - stage: DaipeCDtest
+    displayName: Deploy Daipe to test environment
+    dependsOn: DaipeCI
+    condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+    variables:
+      - template: .cicd/variables/variables-test.yml@adi
+    jobs:
+      - template: templates/daipe-cd.yml
+        parameters:
+          serviceConnectionName: '$(SERVICE_CONNECTION_NAME_TEST)'
+          environmentName: 'test'
+
+  - stage: DaipeCDprod
+    displayName: Deploy Daipe to prod environment
+    dependsOn: DaipeCDdev
+    # build version condition to prevent running prod stage on init commit
+    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'), ne(variables['Build.Version'], 0))
+    variables:
+      - template: .cicd/variables/variables-prod.yml@adi
+    jobs:
+      - template: templates/daipe-cd.yml
+        parameters:
+          serviceConnectionName: '$(SERVICE_CONNECTION_NAME_PROD)'
+          environmentName: 'prod'
