@@ -1,3 +1,14 @@
 parameters:
   datalake:
     base_path: '/%kernel.environment%'
+
+  datalakebundle:
+      tables:
+        # bronze ------------------------------------------
+        bronze_db_batch.your_table_name:
+
+        # silver ------------------------------------------
+        silver_db_batch.your_table_name:
+
+        # gold --------------------------------------------
+        gold_db_batch.your_table_name:
