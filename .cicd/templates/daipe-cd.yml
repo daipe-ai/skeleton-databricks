@@ -1,14 +1,8 @@
-parameters:
-  - name: "serviceConnectionName"
-    type: "string"
-  - name: "environmentName"
-    type: "string"
-
 ## DEPLOY
 jobs:
   - deployment: DeployDbxNtbs
     displayName: Deploy Databricks notebooks
-    environment: ${{ parameters.environmentName }}
+    environment: $(ENV)
     pool:
       vmImage: 'ubuntu-20.04'
     workspace:
@@ -24,7 +18,7 @@ jobs:
               name: getDbxVars
               displayName: Get Databricks Workspace variables
               inputs:
-                azureSubscription: ${{ parameters.serviceConnectionName }}
+                azureSubscription: $(SERVICE_CONNECTION_NAME)
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
@@ -41,7 +35,7 @@ jobs:
             - task: AzureKeyVault@1
               displayName: 'Azure Key Vault: get Databricks token'
               inputs:
-                azureSubscription: ${{ parameters.serviceConnectionName }}
+                azureSubscription: $(SERVICE_CONNECTION_NAME)
                 KeyVaultName: '$(KEYVAULT_NAME)'
                 SecretsFilter: 'unit-dbx-token'
             # set orgId and Workspace Url to env based config for deployment

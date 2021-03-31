@@ -1,7 +1,3 @@
-parameters:
-  - name: "serviceConnectionName"
-    type: "string"
-
 jobs:
 ## TEST
 - job: Test
@@ -18,7 +14,7 @@ jobs:
   - task: AzureKeyVault@1
     displayName: 'Azure Key Vault: get Databricks token'
     inputs:
-      azureSubscription: ${{ parameters.serviceConnectionName }}
+      azureSubscription: $(SERVICE_CONNECTION_NAME)
       KeyVaultName: '$(KEYVAULT_NAME)'
       SecretsFilter: 'unit-dbx-token'
   # environment initialization

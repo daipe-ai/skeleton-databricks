@@ -1,14 +1,8 @@
-parameters:
-  - name: "serviceConnectionName"
-    type: "string"
-  - name: "environmentName"
-    type: "string"
-
 ## DEPLOY
 jobs:
   - deployment: DeployDataFactory
     displayName: Deploy Data Factory
-    environment: ${{ parameters.environmentName }}
+    environment: $(ENV)
     pool:
       vmImage: 'ubuntu-20.04'
     workspace:
@@ -36,12 +30,12 @@ jobs:
               name: deployDataFactory
               displayName: 'Deploy Data Factory'
               inputs:
-                azureSubscription: ${{ parameters.serviceConnectionName }}
+                azureSubscription: $(SERVICE_CONNECTION_NAME)
                 failOnStandardError: true
                 azurePowerShellVersion: latestVersion
                 scriptType: inlineScript
                 inline: |
-                  $Env:ENV = "${{ parameters.environmentName }}"
+                  $Env:ENV = "$(ENV)"
                   $Env:GIT_BRANCH = "$(CURRENT_BRANCH)"
                   $Env:UNIT_NAME = "$(UNIT_NAME)"
                   $Env:DBX_URL = "https://" + $(Get-AzDatabricksWorkspace -ResourceGroupName "$(RESOURCE_GROUP_NAME)" -Name "$(DBX_WS_NAME)").Url
@@ -64,7 +58,7 @@ jobs:
                     -ResourceGroupName "$(RESOURCE_GROUP_NAME)" `
                     -DataFactoryName "$factoryName" `
                     -Location "$(LOCATION)" `
-                    -Stage "datafactory/deployment/config-${{ parameters.environmentName }}.json" `
+                    -Stage "datafactory/deployment/config-$(ENV).json" `
                     -Option $options
 
                   Set-AzKeyVaultAccessPolicy `
