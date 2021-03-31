@@ -35,7 +35,7 @@ poethepoet = ">=0.9.0,<1.0.0"
 flake8 = "^3.8"
 pep8-naming = ">=0.11.1,<1.0.0"
 pyfony-core = "0.8.*"
-dbx-deploy = ">=0.14.0a2,<0.14.0b1"
+dbx-deploy = "0.14.*"
 
 [pyfony.bootstrap]
 root_module_name = "__myproject__"
