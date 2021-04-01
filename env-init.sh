@@ -34,11 +34,13 @@ resolve_conda_executable_path
 CONDA_BASE_DIR=$($CONDA_EXECUTABLE_PATH info --base | sed 's/\\/\//g')
 
 if [ -d "$CONDA_BASE_DIR/Scripts" ]; then
-  CONDA_BIN_DIR="$CONDA_BASE_DIR/Scripts" # Windows
+  PYTHON_EXECUTABLE="$CONDA_BASE_DIR/python.exe" # Windows
 else
-  CONDA_BIN_DIR="$CONDA_BASE_DIR/bin" # Linux/Mac
+  PYTHON_EXECUTABLE="$CONDA_BASE_DIR/bin/python" # Linux/Mac
 fi
 
-$CONDA_BIN_DIR/pip install "penvy==$PENVY_VERSION"
-$CONDA_BIN_DIR/pip install "benvy==$BENVY_VERSION"
-$CONDA_BIN_DIR/benvy-init "$@"
+SITE_PACKAGES_PATH=$($PYTHON_EXECUTABLE -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
+
+$PYTHON_EXECUTABLE -m pip install "penvy==$PENVY_VERSION"
+$PYTHON_EXECUTABLE -m pip install "benvy==$BENVY_VERSION"
+$PYTHON_EXECUTABLE "$SITE_PACKAGES_PATH/penvy/init.py" "$@"
