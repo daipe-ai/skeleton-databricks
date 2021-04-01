@@ -43,4 +43,4 @@ SITE_PACKAGES_PATH=$($PYTHON_EXECUTABLE -c 'import sysconfig; print(sysconfig.ge
 
 $PYTHON_EXECUTABLE -m pip install "penvy==$PENVY_VERSION"
 $PYTHON_EXECUTABLE -m pip install "benvy==$BENVY_VERSION"
-$PYTHON_EXECUTABLE "$SITE_PACKAGES_PATH/penvy/init.py" "$@"
+$PYTHON_EXECUTABLE "$SITE_PACKAGES_PATH/benvy/init.py" "$@"
