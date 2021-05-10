@@ -4,3 +4,10 @@
 # COMMAND ----------
 
 # MAGIC %install_master_package_whl
+
+# COMMAND ----------
+
+import os
+
+if "APP_ENV" not in os.environ:
+    os.environ["APP_ENV"] = "dev"
