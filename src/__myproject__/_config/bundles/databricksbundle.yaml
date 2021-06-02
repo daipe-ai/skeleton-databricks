@@ -1,6 +1,0 @@
-parameters:
-  databricksbundle:
-    databricks_connect:
-      connection:
-        address: '%databricks.address%'
-        cluster_id: '%databricks.cluster_id%'
