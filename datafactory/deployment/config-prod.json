@@ -9,6 +9,11 @@
             "name": "$.properties.globalParameters.GIT_BRANCH.value",
             "value": "$($Env:GIT_BRANCH)",
             "action": "update"
+        },
+        {
+            "name": "$.properties.globalParameters.DBX_BASE_PATH.value",
+            "value": "/__myproject__/_current",
+            "action": "update"
         }
     ],
     "AzureDatabricks": [

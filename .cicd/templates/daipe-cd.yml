@@ -65,8 +65,16 @@ jobs:
                   eval "$(conda shell.bash hook)"
                   source $HOME/.poetry/env
                   conda activate $PWD/.venv
-                  git checkout $(CURRENT_BRANCH)
-                  console dbx:deploy --env=$(ENV)
+
+                  if [ $(DBX_DEPLOY_METHOD) == "deploy" ]; then
+                    git branch -D $(CURRENT_BRANCH) || true
+                    git checkout -b $(CURRENT_BRANCH)
+                    console dbx:deploy --env=$(ENV)
+                  fi
+
+                  if [ $(DBX_DEPLOY_METHOD) == "release" ]; then
+                    console dbx:release --env=$(ENV)
+                  fi
             - task: Bash@3
               displayName: 'Link to Databricks workspace'
               inputs:

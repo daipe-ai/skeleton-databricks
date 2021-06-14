@@ -2,13 +2,14 @@ variables:
   UNIT_NAME: '__unitname__'  # eq. adap-cz-daipe
   LOCATION: '__location__' # eq. westeurope
 
-  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+  ${{ if or(eq(variables['Build.SourceBranchName'], 'master'), startswith(variables['Build.SourceBranchName'], 'feature-'), startswith(variables['Build.SourceBranchName'], 'hotfix-')) }}:
     ENV: 'dev'
     RESOURCE_GROUP_NAME: '$(UNIT_NAME)-rg-$(ENV)'
     DBX_WS_NAME: '$(UNIT_NAME)-dbx-ws-$(ENV)'
     KEYVAULT_NAME: '$(UNIT_NAME)-kv-$(ENV)'
     FACTORY_NAME: '$(UNIT_NAME)-adf-$(ENV)'
     SERVICE_CONNECTION_NAME: '__serviceconnectiondev__'
+    DBX_DEPLOY_METHOD: 'deploy'
 
   ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
     ENV: 'test'
@@ -17,6 +18,7 @@ variables:
     KEYVAULT_NAME: '$(UNIT_NAME)-kv-$(ENV)'
     FACTORY_NAME: '$(UNIT_NAME)-adf-$(ENV)'
     SERVICE_CONNECTION_NAME: '__serviceconnectiontest__'
+    DBX_DEPLOY_METHOD: 'deploy'
 
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags/') }}:
     ENV: 'prod'
@@ -25,3 +27,4 @@ variables:
     KEYVAULT_NAME: '$(UNIT_NAME)-kv-$(ENV)'
     FACTORY_NAME: '$(UNIT_NAME)-adf-$(ENV)'
     SERVICE_CONNECTION_NAME: '__serviceconnectionprod__'
+    DBX_DEPLOY_METHOD: 'release'
