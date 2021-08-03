@@ -149,13 +149,14 @@ python-dotenv = ">=0.13.0,<1.0.0"
 
 [[package]]
 name = "daipe-core"
-version = "1.0.0"
+version = "1.1.0"
 description = "Daipe framework core"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
+console-bundle = ">=0.4.0"
 injecta = ">=0.10.0,<0.11.0"
 logger-bundle = ">=0.7.0,<0.8.0"
 pyfony-bundles = ">=0.4.0,<0.5.0"
@@ -173,7 +174,7 @@ databricks-cli = ">=0.12.0,<0.13.0"
 
 [[package]]
 name = "databricks-bundle"
-version = "1.0.0"
+version = "1.1.1"
 description = "Databricks runtime support for the Daipe framework"
 category = "main"
 optional = false
@@ -181,7 +182,7 @@ python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
 console-bundle = ">=0.4.0,<0.5.0"
-daipe-core = ">=1.0,<2.0"
+daipe-core = ">=1.1,<2.0"
 injecta = ">=0.10.0,<0.11.0"
 logger-bundle = ">=0.7.0,<0.8.0"
 pyfony-bundles = ">=0.4.0,<0.5.0"
@@ -239,7 +240,7 @@ simpleeval = ">=0.9.10,<1.0.0"
 
 [[package]]
 name = "dbx-deploy"
-version = "1.0.1"
+version = "1.0.3"
 description = "Databricks Deployment Tool"
 category = "dev"
 optional = false
@@ -249,7 +250,7 @@ python-versions = ">=3.7,<4.0"
 console-bundle = ">=0.4.0,<0.5.0"
 databricks-api = ">=0.3.0,<1.0.0"
 dbx-notebook-exporter = ">=0.4.0,<0.5.0"
-nbconvert = ">=5.6,<6.0"
+nbconvert = ">=5.6"
 pyfony-bundles = ">=0.4.0,<0.5.0"
 pyfony-core = ">=0.8.0,<0.9.0"
 pygit2 = ">=1.3,<2.0"
@@ -1028,7 +1029,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7.1,<4.0.0"
-content-hash = "ab87c7364b100f85e965f451dac1daa98ff849b0a33adb28e373745fa42dcb41"
+content-hash = "b5c83dbe022751ecd87372aeeaf189577161c66e4f9f1c30cf5a3be9e7708ccf"
 
 [metadata.files]
 appdirs = [
@@ -1121,14 +1122,14 @@ console-bundle = [
     {file = "console_bundle-0.4.0-py3-none-any.whl", hash = "sha256:6fb19484d5ebf6904e60646fb253558c3eebb6335d283088ddb7054f83505921"},
 ]
 daipe-core = [
-    {file = "daipe_core-1.0.0-py3-none-any.whl", hash = "sha256:157cdf48add2906584770f898b7473732e730e542d240e68abbde75a1ce1ba3a"},
+    {file = "daipe_core-1.1.0-py3-none-any.whl", hash = "sha256:d3bb3ea459bd9b2a5257fc9265f25306ee72f95ef04f1898edaf4290f917e844"},
 ]
 databricks-api = [
     {file = "databricks_api-0.6.0-py2.py3-none-any.whl", hash = "sha256:5ed697f59c6c3c09bd649f8cfaa1345d5e273de093b968b2542d9f7c8ef348de"},
     {file = "databricks_api-0.6.0.tar.gz", hash = "sha256:4b11c544755e714c6e5d4d18ebe3e936e41eb15b7d6374a49c3102d92ee847ea"},
 ]
 databricks-bundle = [
-    {file = "databricks_bundle-1.0.0-py3-none-any.whl", hash = "sha256:d23acbebfa300561e8f56040c73ea28aab314b5e2542e8b08023add06044b961"},
+    {file = "databricks_bundle-1.1.1-py3-none-any.whl", hash = "sha256:c1d16532e438573ada7358f580bc4e91404302b2b097d8e15d4e03153015ff3a"},
 ]
 databricks-cli = [
     {file = "databricks-cli-0.12.2.tar.gz", hash = "sha256:e0772c96c1e3274a239c9cfdd07da19c84804f54eb4f0d32f59fa75b0dce42ae"},
@@ -1141,7 +1142,7 @@ datalake-bundle = [
     {file = "datalake_bundle-1.0.0-py3-none-any.whl", hash = "sha256:bb7aca9c38c18895b0917cd5d720257f7463a44ffbb56a224e44df19f0cad65c"},
 ]
 dbx-deploy = [
-    {file = "dbx_deploy-1.0.1-py3-none-any.whl", hash = "sha256:3b4795bf413ae58174400e7f053ce4c174938a6e18d2521564dc93d685a01ceb"},
+    {file = "dbx_deploy-1.0.3-py3-none-any.whl", hash = "sha256:f0a570730cb9b1570494eb5cd6428051ee5716c6e52df65d132c85a320511a8f"},
 ]
 dbx-notebook-exporter = [
     {file = "dbx-notebook-exporter-0.4.0.tar.gz", hash = "sha256:e3fd919ef3acabbd82ef1188633f1f9f8cfa6f7a08676f1a6833f912a91fab7b"},

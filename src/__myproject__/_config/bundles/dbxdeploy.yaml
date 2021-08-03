@@ -9,4 +9,3 @@ parameters:
     databricks:
       host: '%databricks.address%'
       token: '%env(DBX_TOKEN)%'
-      cluster_id: '%databricks.cluster_id%'

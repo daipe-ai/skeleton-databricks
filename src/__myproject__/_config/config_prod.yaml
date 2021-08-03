@@ -4,7 +4,6 @@ imports:
 parameters:
   databricks:
     address: https://westeurope.azuredatabricks.net
-    cluster_id: '[Your PROD cluster ID]'
     workspace:
       base_dir: '/__myproject__'
 

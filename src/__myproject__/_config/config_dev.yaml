@@ -4,6 +4,5 @@ imports:
 parameters:
   databricks:
     address: '[Your DEV cluster address]'
-    cluster_id: '[Your DEV cluster ID]'
     workspace:
       base_dir: '/__myproject__/master'  # Use {current_branch} placeholder to deploy to current branch named folder
