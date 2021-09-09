@@ -32,13 +32,6 @@ stages:
     jobs:
       - template: templates/datafactory-ci.yml
 
-  - stage: DataFactoryCDdev
-    displayName: Deploy Data Factory to dev environment
-    dependsOn: DataFactoryCI
-    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
-    jobs:
-      - template: templates/datafactory-cd.yml
-
   - stage: DataFactoryCDtest
     displayName: Deploy Data Factory to test environment
     dependsOn: DataFactoryCI
