@@ -41,6 +41,5 @@ fi
 
 SITE_PACKAGES_PATH=$($PYTHON_EXECUTABLE -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
 
-$PYTHON_EXECUTABLE -m pip install "penvy==$PENVY_VERSION"
-$PYTHON_EXECUTABLE -m pip install "benvy==$BENVY_VERSION"
+$PYTHON_EXECUTABLE -m pip install "penvy==$PENVY_VERSION" "benvy==$BENVY_VERSION"
 $PYTHON_EXECUTABLE "$SITE_PACKAGES_PATH/benvy/init.py" "$@"
