@@ -2,7 +2,6 @@ name: __myproject__
 channels:
   - conda-forge
 dependencies:
-  - python=3.7.3
-  - pip=21.2.*
-  - setuptools=<58
-
+  - python=3.7.5
+  - pip=20.0.2
+  - setuptools=45.2.0
