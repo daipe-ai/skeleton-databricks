@@ -15,6 +15,16 @@ jobs:
       - run: |
           conda config --remove channels defaults
           conda config --append channels conda-forge
+      - name: cache venv
+        id: cache-venv
+        uses: actions/cache@v2
+        with:
+          path: |
+            .venv
+            ~/.poetry/env
+          key: ${{ runner.os }}-env-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-env-
       - name: setup
         run: |
           cp .env.dist .env
