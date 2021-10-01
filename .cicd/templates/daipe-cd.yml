@@ -13,6 +13,15 @@ jobs:
           steps:
             # checkout current repository
             - checkout: self
+            - task: Bash@3
+              displayName: 'Set conda-forge repository'
+              inputs:
+                targetType: inline
+                script: |
+                  set -euo pipefail
+                  eval "$(conda shell.bash hook)"
+                  conda config --remove channels defaults
+                  conda config --append channels conda-forge
             # get Databricks variables (url, orgId)
             - task: AzureCLI@2
               name: getDbxVars
@@ -22,6 +31,7 @@ jobs:
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
+                  set -euo pipefail
                   az extension add --name databricks
                   echo "##vso[task.setvariable variable=WORKSPACE_URL;isOutput=true]\
                   $(az databricks workspace show --resource-group $(RESOURCE_GROUP_NAME) \
@@ -44,6 +54,7 @@ jobs:
               inputs:
                 targetType: inline
                 script: |
+                  set -euo pipefail
                   sed -i "s/address: .*/address: https:\/\/$(getDbxVars.WORKSPACE_URL)/g" src/__myproject__/_config/config_$(ENV).yaml
                   cat src/__myproject__/_config/config_$(ENV).yaml
             # environment initialization
@@ -52,6 +63,7 @@ jobs:
               inputs:
                 targetType: inline
                 script: |
+                  set -euo pipefail
                   cp .env.dist .env
                   sed -i 's/DBX_TOKEN=/DBX_TOKEN=$(unit-dbx-token)/g' .env
                   export SHELL=$SHELL
@@ -62,12 +74,13 @@ jobs:
               inputs:
                 targetType: inline
                 script: |
+                  set -euo pipefail
                   eval "$(conda shell.bash hook)"
                   source $HOME/.poetry/env
                   conda activate $PWD/.venv
 
                   if [ $(DBX_DEPLOY_METHOD) == "deploy" ]; then
-                    git branch -D $(CURRENT_BRANCH) || true
+                    git branch -D $(CURRENT_BRANCH) 2>/dev/null || true
                     git checkout -b $(CURRENT_BRANCH)
                     console dbx:deploy --env=$(ENV)
                   fi

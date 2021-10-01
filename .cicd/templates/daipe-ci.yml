@@ -10,6 +10,16 @@ jobs:
     clean: all
 
   steps:
+  # set conda-forge repository
+  - task: Bash@3
+    displayName: 'Set conda-forge repository'
+    inputs:
+      targetType: inline
+      script: |
+        set -euo pipefail
+        eval "$(conda shell.bash hook)"
+        conda config --remove channels defaults
+        conda config --append channels conda-forge
   # get Databricks token from Key Vault
   - task: AzureKeyVault@1
     displayName: 'Azure Key Vault: get Databricks token'
@@ -23,6 +33,7 @@ jobs:
     inputs:
       targetType: inline
       script: |
+        set -euo pipefail
         cp .env.dist .env
         sed -i 's/DBX_TOKEN=/DBX_TOKEN=$(unit-dbx-token)/g' .env
         export SHELL=$SHELL
@@ -33,6 +44,7 @@ jobs:
     inputs:
       targetType: inline
       script: |
+        set -euo pipefail
         eval "$(conda shell.bash hook)"
         conda activate $PWD/.venv
         source $HOME/.poetry/env
@@ -44,6 +56,7 @@ jobs:
     inputs:
       targetType: inline
       script: |
+        set -euo pipefail
         eval "$(conda shell.bash hook)"
         conda activate $PWD/.venv
         ~/.poetry/bin/poetry install --no-root --no-dev # remove all dev dependencies
