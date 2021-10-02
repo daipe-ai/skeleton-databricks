@@ -9,6 +9,10 @@
 			"GIT_BRANCH": {
 				"type": "string",
 				"value": "master"
+			},
+			"DBX_BASE_PATH": {
+				"type": "string",
+				"value": "/__myproject__/master",
 			}
 		}
 	},
