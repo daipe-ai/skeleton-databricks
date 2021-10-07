@@ -23,8 +23,6 @@ jobs:
             .venv
             ~/.poetry/env
           key: ${{ runner.os }}-env-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-env-
       - name: setup
         run: |
           cp .env.dist .env
@@ -44,6 +42,6 @@ jobs:
           conda activate $PWD/.venv
           source ~/.poetry/env
           ~/.poetry/bin/poetry install --no-root --no-dev # remove all dev dependencies
-          pip install databricks-connect==7.3.7 # pyspark is still needed
+          pip install databricks-connect==9.1.0 # pyspark is still needed
           pip install poethepoet
           poe container-check
