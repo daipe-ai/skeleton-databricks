@@ -8,6 +8,10 @@ class ContainerTest(unittest.TestCase):
         container = bootstrapped_container.init("dev")
         test_services(container)
 
+    def test_env_test(self):
+        container = bootstrapped_container.init("test")
+        test_services(container)
+
     def test_env_prod(self):
         container = bootstrapped_container.init("prod")
         test_services(container)

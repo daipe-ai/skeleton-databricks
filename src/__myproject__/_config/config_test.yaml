@@ -3,6 +3,4 @@ imports:
 
 parameters:
   databricks:
-    address: https://westeurope.azuredatabricks.net
-    workspace:
-      base_dir: '/__myproject__/{current_branch}'
+    address: '[Your workspace address]'

@@ -6,6 +6,7 @@ dist/*
 build
 .DS_Store
 *-checkpoint.ipynb
+*-checkpoint.py
 .idea/workspace.xml
 .env
 !.gitkeep

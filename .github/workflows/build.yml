@@ -1,20 +1,23 @@
-name: pipeline
+name: Reusable build workflow
+
 on:
-  push:
-  schedule:
-    - cron: "0 6 * * *"
+  workflow_call:
 
 jobs:
-  pipeline:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+
       - uses: conda-incubator/setup-miniconda@v2.1.1
         with:
           miniconda-version: 'py39_4.10.3'
       - run: |
           conda config --remove channels defaults
           conda config --append channels conda-forge
+
       - name: cache venv
         id: cache-venv
         uses: actions/cache@v2
@@ -23,25 +26,28 @@ jobs:
             .venv
             ~/.poetry/env
           key: ${{ runner.os }}-env-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-env-
+
       - name: setup
         run: |
-          cp .env.dist .env
-          sed -i 's/DBX_TOKEN=/DBX_TOKEN=abcdefgh123456789/g' .env # remove DBX_TOKEN env var from .env
           export SHELL=$SHELL # for python to be able to access the bash version
+          chmod +x env-init.sh
           ./env-init.sh -y --verbose
+
       - name: linting
         run: |
           eval "$(conda shell.bash hook)"
           conda activate $PWD/.venv
           source ~/.poetry/env
-          poe black-check
           poe flake8
+
       - name: containerChecks
         run: |
           eval "$(conda shell.bash hook)"
           conda activate $PWD/.venv
           source ~/.poetry/env
           ~/.poetry/bin/poetry install --no-root --no-dev # remove all dev dependencies
-          pip install databricks-connect==9.1.0 # pyspark is still needed
+          pip install https://daipe-packages.s3.eu-central-1.amazonaws.com/databricks-connect-9.1.2.tar.gz # pyspark is still needed
           pip install poethepoet
           poe container-check

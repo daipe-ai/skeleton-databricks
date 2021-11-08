@@ -1,30 +1,20 @@
 variables:
-  UNIT_NAME: '__unitname__'  # eq. adap-cz-daipe
-  LOCATION: '__location__' # eq. westeurope
-
   ${{ if or(eq(variables['Build.SourceBranchName'], 'master'), startswith(variables['Build.SourceBranchName'], 'feature-'), startswith(variables['Build.SourceBranchName'], 'hotfix-')) }}:
     ENV: 'dev'
-    RESOURCE_GROUP_NAME: '$(UNIT_NAME)-rg-$(ENV)'
-    DBX_WS_NAME: '$(UNIT_NAME)-dbx-ws-$(ENV)'
-    KEYVAULT_NAME: '$(UNIT_NAME)-kv-$(ENV)'
-    FACTORY_NAME: '$(UNIT_NAME)-adf-$(ENV)'
-    SERVICE_CONNECTION_NAME: '__serviceconnectiondev__'
-    DBX_DEPLOY_METHOD: 'deploy'
+    CURRENT_BRANCH: $[ replace(variables['Build.SourceBranch'], 'refs/heads/', '') ]
+    DEPLOY_COMMAND: ''
 
   ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
     ENV: 'test'
-    RESOURCE_GROUP_NAME: '$(UNIT_NAME)-rg-$(ENV)'
-    DBX_WS_NAME: '$(UNIT_NAME)-dbx-ws-$(ENV)'
-    KEYVAULT_NAME: '$(UNIT_NAME)-kv-$(ENV)'
-    FACTORY_NAME: '$(UNIT_NAME)-adf-$(ENV)'
-    SERVICE_CONNECTION_NAME: '__serviceconnectiontest__'
-    DBX_DEPLOY_METHOD: 'deploy'
+    SERVICE_CONNECTION_NAME: '<service_connection_name>'
+    REPO_URL: '<azure_devops_repo_url>'
+    CURRENT_BRANCH: $[ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') ]
+    DEPLOY_COMMAND: 'daipe dbx:repo:update --env=$(ENV) --repo-url $(REPO_URL) --branch $(CURRENT_BRANCH) --repo-name $(CURRENT_BRANCH)'
 
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags/') }}:
     ENV: 'prod'
-    RESOURCE_GROUP_NAME: '$(UNIT_NAME)-rg-$(ENV)'
-    DBX_WS_NAME: '$(UNIT_NAME)-dbx-ws-$(ENV)'
-    KEYVAULT_NAME: '$(UNIT_NAME)-kv-$(ENV)'
-    FACTORY_NAME: '$(UNIT_NAME)-adf-$(ENV)'
-    SERVICE_CONNECTION_NAME: '__serviceconnectionprod__'
-    DBX_DEPLOY_METHOD: 'release'
+    SERVICE_CONNECTION_NAME: '<service_connection_name>'
+    REPO_URL: '<azure_devops_repo_url>'
+    CURRENT_TAG: $[ replace(variables['System.PullRequest.SourceBranch'], 'refs/tags/', '') ]
+    CURRENT_BRANCH: 'master'
+    DEPLOY_COMMAND: 'daipe dbx:repo:update --env=$(ENV) --repo-url $(REPO_URL) --tag $(CURRENT_TAG) --repo-name $(CURRENT_BRANCH)'

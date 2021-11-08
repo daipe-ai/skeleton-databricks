@@ -22,32 +22,6 @@ jobs:
                   eval "$(conda shell.bash hook)"
                   conda config --remove channels defaults
                   conda config --append channels conda-forge
-            # get Databricks variables (url, orgId)
-            - task: AzureCLI@2
-              name: getDbxVars
-              displayName: Get Databricks Workspace variables
-              inputs:
-                azureSubscription: $(SERVICE_CONNECTION_NAME)
-                scriptType: 'bash'
-                scriptLocation: 'inlineScript'
-                inlineScript: |
-                  set -euo pipefail
-                  az extension add --name databricks
-                  echo "##vso[task.setvariable variable=WORKSPACE_URL;isOutput=true]\
-                  $(az databricks workspace show --resource-group $(RESOURCE_GROUP_NAME) \
-                                                   --name $(DBX_WS_NAME) \
-                                                   --query workspaceUrl -o tsv)"
-                  echo "##vso[task.setvariable variable=DBX_ORG_ID;isOutput=true]\
-                  $(az databricks workspace show --resource-group $(RESOURCE_GROUP_NAME) \
-                                                 --name $(DBX_WS_NAME) \
-                                                 --query workspaceId -o tsv)"
-            # get Databricks token from Key Vault
-            - task: AzureKeyVault@1
-              displayName: 'Azure Key Vault: get Databricks token'
-              inputs:
-                azureSubscription: $(SERVICE_CONNECTION_NAME)
-                KeyVaultName: '$(KEYVAULT_NAME)'
-                SecretsFilter: 'unit-dbx-token'
             # set orgId and Workspace Url to env based config for deployment
             - task: Bash@3
               displayName: 'Set DBX orgID and DBX url for deployment'
@@ -55,8 +29,8 @@ jobs:
                 targetType: inline
                 script: |
                   set -euo pipefail
-                  sed -i "s/address: .*/address: https:\/\/$(getDbxVars.WORKSPACE_URL)/g" src/__myproject__/_config/config_$(ENV).yaml
-                  cat src/__myproject__/_config/config_$(ENV).yaml
+                  sed -i "s,\[Your workspace address\],$(DBX_URL),g" src/$(ls src)/_config/config_$(ENV).yaml
+                  cat src/$(ls src)/_config/config_$(ENV).yaml
             # environment initialization
             - task: Bash@3
               displayName: 'Python environment initialization'
@@ -65,8 +39,9 @@ jobs:
                 script: |
                   set -euo pipefail
                   cp .env.dist .env
-                  sed -i 's/DBX_TOKEN=/DBX_TOKEN=$(unit-dbx-token)/g' .env
+                  sed -i 's/DBX_TOKEN=/DBX_TOKEN=$(DBX_TOKEN)/g' .env
                   export SHELL=$SHELL
+                  chmod +x env-init.sh
                   ./env-init.sh -y --verbose
             # deployment of notebooks to Dbx workspace
             - task: Bash@3
@@ -78,16 +53,8 @@ jobs:
                   eval "$(conda shell.bash hook)"
                   source $HOME/.poetry/env
                   conda activate $PWD/.venv
-
-                  if [ $(DBX_DEPLOY_METHOD) == "deploy" ]; then
-                    git branch -D $(CURRENT_BRANCH) 2>/dev/null || true
-                    git checkout -b $(CURRENT_BRANCH)
-                    console dbx:deploy --env=$(ENV)
-                  fi
-
-                  if [ $(DBX_DEPLOY_METHOD) == "release" ]; then
-                    console dbx:release --env=$(ENV)
-                  fi
+                  echo $(DEPLOY_COMMAND)
+                  eval "$(DEPLOY_COMMAND)"
             - task: Bash@3
               displayName: 'Link to Databricks workspace'
               inputs:
@@ -98,7 +65,7 @@ jobs:
                     -> If you are opening provided Databricks workspace for the first time you need to open it from https://portal.azure.com/
                     -> Go to $(RESOURCE_GROUP_NAME) and find there the $(DBX_WS_NAME) and Launch workspace.
                     -> Otherwise you can opet the workspace directly in the link below.
-                    -> Link to deployed notebooks https://$(getDbxVars.WORKSPACE_URL)
+                    -> Link to deployed notebooks $(DBX_URL)
                   END
                   )
                   echo "$MSG"
