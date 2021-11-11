@@ -3,7 +3,7 @@ name: Reusable deploy workflow
 on:
   workflow_call:
     inputs:
-      deploy_command:
+      command:
         required: true
         type: string
       env:
@@ -17,7 +17,7 @@ on:
 
 
 jobs:
-  deploy:
+  run_command:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -55,10 +55,10 @@ jobs:
           chmod +x env-init.sh
           ./env-init.sh -y --verbose
 
-      - name: deploy
+      - name: run command
         run: |
           eval "$(conda shell.bash hook)"
           conda activate $PWD/.venv
           source ~/.poetry/env
           poetry install --no-root
-          ${{ inputs.deploy_command }}
+          ${{ inputs.command }}

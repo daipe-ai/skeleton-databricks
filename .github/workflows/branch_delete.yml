@@ -3,10 +3,10 @@ on:
   delete:
 
 jobs:
-  call-deploy:
-    uses: daipe-ai/skeleton-databricks/.github/workflows/deploy.yml@master
+  delete:
+    uses: daipe-ai/skeleton-databricks/.github/workflows/run_command.yml@master
     with:
-      deploy_command: daipe dbx:repo:delete --env=test --repo-url=https://github.com/daipe-ai/skeleton-databricks.git --repo-name=${GITHUB_REF#refs/heads/}
+      command: daipe dbx:repo:delete --env=test --repo-url=${{ github.server_url }}/${{ github.repository }}.git --repo-name=${GITHUB_REF#refs/heads/}
       env: test
     secrets:
       DBX_URL: ${{ secrets.DBX_URL }}
