@@ -4,14 +4,14 @@ on:
     types: [published]
 
 jobs:
-  call-build:
+  build:
     uses: daipe-ai/skeleton-databricks/.github/workflows/build.yml@master
 
-  call-deploy:
-    needs: call-build
-    uses: daipe-ai/skeleton-databricks/.github/workflows/deploy.yml@master
+  deploy:
+    needs: build
+    uses: daipe-ai/skeleton-databricks/.github/workflows/run_command.yml@master
     with:
-      deploy_command: daipe dbx:repo:update --env=prod --repo-url=https://github.com/daipe-ai/skeleton-databricks.git --tag=${{ github.ref }} --repo-name=master
+      command: daipe dbx:repo:update --env=test --repo-url=${{ github.server_url }}/${{ github.repository }}.git --tag=${{ github.ref }} --repo-name=master
       env: prod
     secrets:
       DBX_URL: ${{ secrets.DBX_URL }}
