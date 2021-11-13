@@ -1,0 +1,58 @@
+name: Templates Creator Pipeline
+on:
+  push:
+    branches:
+      - kg-templates-automation
+
+jobs:
+  create_templates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Setup git config
+        run: |
+          git config --global user.name "Daipe Template Creator"
+          git config --global user.email "daipe.ai@datasentics.com"
+          git config --global init.defaultBranch master
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.10'
+          architecture: 'x64'
+
+      - name: Setup poetry
+        uses: Gr1N/setup-poetry@v7
+        with:
+          poetry-version: '1.1.8'
+
+      - name: Replace placeholders
+        run: |
+          sed -i 's/t__myproject__t/daipe-project/g' pyproject.toml
+          mv src/__myproject__ src/daipeproject
+
+      - name: Create Base Template
+        env:
+          TEMPLATE_CREATOR_USERNAME: ${{ secrets.TEMPLATE_CREATOR_USERNAME }}
+          TEMPLATE_CREATOR_TOKEN: ${{ secrets.TEMPLATE_CREATOR_TOKEN }}
+        run: |
+          rm -rf .git
+          git init
+          git add -- . ':!.github/workflows/create_templates.yml' ':!.vscode/' ':!.idea/'
+          git commit -m "Initial commit"
+          git remote add origin https://${TEMPLATE_CREATOR_USERNAME}:${TEMPLATE_CREATOR_TOKEN}@github.com/daipe-ai/daipe-template-base.git
+          git push origin master --force
+
+      - name: Create Feature Store Template
+        env:
+          TEMPLATE_CREATOR_USERNAME: ${{ secrets.TEMPLATE_CREATOR_USERNAME }}
+          TEMPLATE_CREATOR_TOKEN: ${{ secrets.TEMPLATE_CREATOR_TOKEN }}
+        run: |
+          poetry add feature-store-bundle --lock
+          git add pyproject.toml poetry.lock
+          git commit --amend -m "Initial commit"
+          git remote set-url origin https://${TEMPLATE_CREATOR_USERNAME}:${TEMPLATE_CREATOR_TOKEN}@github.com/daipe-ai/daipe-template-feature-store.git
+          git push origin master --force
