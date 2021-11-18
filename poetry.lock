@@ -239,9 +239,10 @@ sql = ["pandas (>=0.23.2)", "pyarrow (>=1.0.0)"]
 [package.source]
 type = "url"
 url = "https://daipe-packages.s3.eu-central-1.amazonaws.com/databricks-connect-9.1.2.tar.gz"
+
 [[package]]
 name = "datalake-bundle"
-version = "1.2.0b1"
+version = "1.2.1"
 description = "DataLake tables management bundle for the Daipe Framework"
 category = "main"
 optional = false
@@ -1459,7 +1460,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.10"
-content-hash = "cc9bc82d2cc8176793c9cfbe2b2fee70138d565d68c909b34fffc6b0c2312456"
+content-hash = "d88613406b28922ae6bd84323bd86ff873412e6b41a7bea06b4874b73077a6b1"
 
 [metadata.files]
 appdirs = [
@@ -1627,7 +1628,7 @@ databricks-cli = [
 ]
 databricks-connect = []
 datalake-bundle = [
-    {file = "datalake_bundle-1.2.0b1-py3-none-any.whl", hash = "sha256:7a2f5909445c9b11e01a474d18986164e521b5932acc22e02ab0ac51980f03cd"},
+    {file = "datalake_bundle-1.2.1-py3-none-any.whl", hash = "sha256:b1f87247d07dd1b568dc480ae05b8f937dce6efbea1f49e1e0220037e62901a2"},
 ]
 dbx-deploy = [
     {file = "dbx_deploy-1.2.0b1-py3-none-any.whl", hash = "sha256:aff0ae804e5ff13fbcdac69c8666a6fdab4bc5088be5af14e5d956f881354189"},

@@ -11,11 +11,6 @@ authors = [
 # DBR 9.1 python
 python = "3.8.10"
 
-# Custom dependencies
-injecta = "0.10.*"
-databricks-bundle = "^1.2"
-datalake-bundle = "^1.2.0b1"
-
 # DBR 9.1 dependencies
 pip = "21.0.1"
 setuptools = "52.0.0"
@@ -80,6 +75,11 @@ wcwidth = "0.2.5"
 zipp = "3.4.1"
 importlib-metadata = "3.10.0"
 distro = "1.4.0"
+
+# Custom dependencies
+injecta = "0.10.*"
+databricks-bundle = "^1.2"
+datalake-bundle = "^1.2"
 
 [tool.poetry.dev-dependencies]
 databricks-connect = { url = "https://daipe-packages.s3.eu-central-1.amazonaws.com/databricks-connect-9.1.2.tar.gz" }
