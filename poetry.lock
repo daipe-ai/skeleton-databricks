@@ -175,7 +175,7 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "daipe-core"
-version = "1.2.0"
+version = "1.2.1"
 description = "Daipe framework core"
 category = "main"
 optional = false
@@ -1617,7 +1617,7 @@ cython = [
     {file = "Cython-0.29.23.tar.gz", hash = "sha256:6a0d31452f0245daacb14c979c77e093eb1a546c760816b5eed0047686baad8e"},
 ]
 daipe-core = [
-    {file = "daipe_core-1.2.0-py3-none-any.whl", hash = "sha256:2f0048fc19f7cb21b849076b8f1ffb1ebbd6dacf15ec23954cd7d422b5012f30"},
+    {file = "daipe_core-1.2.1-py3-none-any.whl", hash = "sha256:97a61e5a0eade1d6e1c818ffc2b68d68a16731a83bdefa584775ba96e60fec83"},
 ]
 databricks-bundle = [
     {file = "databricks_bundle-1.2.0-py3-none-any.whl", hash = "sha256:5c5ff82f7a3332ca1e08ab40beadbd5749236778301315031eadeead49031736"},
