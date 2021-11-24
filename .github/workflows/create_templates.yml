@@ -25,9 +25,9 @@ jobs:
           architecture: 'x64'
 
       - name: Setup poetry
-        uses: Gr1N/setup-poetry@v7
+        uses: snok/install-poetry@v1.1.1
         with:
-          poetry-version: '1.1.8'
+          version: 1.1.8
 
       - name: Replace placeholders
         run: |
