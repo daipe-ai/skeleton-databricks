@@ -88,7 +88,7 @@ flake8 = "3.7.*"
 pep8-naming = ">=0.11.1,<1.0.0"
 pycodestyle_magic = "^0.5"
 pyfony-core = "^0.8.1"
-dbx-deploy = "^1.2.0b1"
+dbx-deploy = "^1.2.0"
 lineage-bundle = "^1.0.2"
 
 [pyfony.bootstrap]
