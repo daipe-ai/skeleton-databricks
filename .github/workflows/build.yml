@@ -35,13 +35,6 @@ jobs:
           chmod +x env-init.sh
           ./env-init.sh -y --verbose
 
-      - name: linting
-        run: |
-          eval "$(conda shell.bash hook)"
-          conda activate $PWD/.venv
-          source ~/.poetry/env
-          poe flake8
-
       - name: containerChecks
         run: |
           eval "$(conda shell.bash hook)"
