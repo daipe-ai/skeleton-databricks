@@ -4,10 +4,13 @@ dbutils.widgets.text("2. package", defaultValue="")
 poetry_action = dbutils.widgets.get("1. poetry action")
 package = dbutils.widgets.get("2. package")
 
+if not package:
+    dbutils.notebook.exit(0)
+
 # COMMAND ----------
 
 # MAGIC %sh
-# MAGIC pip install benvy==1.2.2.dev2
+# MAGIC pip install benvy==1.2.2b1
 
 # COMMAND ----------
 

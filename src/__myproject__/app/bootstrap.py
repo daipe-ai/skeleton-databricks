@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %sh
-# MAGIC pip install benvy==1.2.2.dev2
+# MAGIC pip install benvy==1.2.2b1
 
 # COMMAND ----------
 
