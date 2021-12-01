@@ -4,6 +4,8 @@ dbutils.widgets.text("2. package", defaultValue="")
 poetry_action = dbutils.widgets.get("1. poetry action")
 package = dbutils.widgets.get("2. package")
 
+# COMMAND ----------
+
 if not package:
     dbutils.notebook.exit(0)
 
