@@ -35,6 +35,10 @@ jobs:
           chmod +x env-init.sh
           ./env-init.sh -y --verbose
 
+      - name: decoratorIndentCheck
+        run: |
+          bash decorators_indent_check.sh
+
       - name: containerChecks
         run: |
           eval "$(conda shell.bash hook)"
