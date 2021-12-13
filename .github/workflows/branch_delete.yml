@@ -4,7 +4,7 @@ on:
 
 jobs:
   delete:
-    uses: daipe-ai/skeleton-databricks/.github/workflows/run_command.yml@master
+    uses: daipe-ai/daipe-project-ci-cd/.github/workflows/run_command.yml@v1
     with:
       command: daipe dbx:repo:delete --env=test --repo-url=${{ github.server_url }}/${{ github.repository }}.git --repo-name=${GITHUB_REF#refs/heads/}
       env: test
