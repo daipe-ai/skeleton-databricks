@@ -25,12 +25,17 @@ if is_databricks_repo():
 # COMMAND ----------
 
 import os  # noqa
+import IPython  # noqa
 
 if "APP_ENV" not in os.environ:
     os.environ["APP_ENV"] = "dev"
 
 if "DAIPE_BOOTSTRAPPED" not in os.environ:
     os.environ["DAIPE_BOOTSTRAPPED"] = "1"
+
+if os.environ["APP_ENV"] == "dev":
+    IPython.get_ipython().run_line_magic("load_ext", "autoreload")
+    IPython.get_ipython().run_line_magic("autoreload", "2")
 
 # COMMAND ----------
 
