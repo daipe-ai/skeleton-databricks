@@ -1,0 +1,18 @@
+name: Prod pipeline
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    uses: daipe-ai/skeleton-databricks/.github/workflows/build.yml@master
+
+  deploy:
+    needs: build
+    uses: daipe-ai/skeleton-databricks/.github/workflows/run_command.yml@master
+    with:
+      command: bash ./tools/_jobs/prod ${{ github.event.repository.name }}
+      env: prod
+    secrets:
+      DBX_URL: ${{ secrets.DBX_URL }}
+      DBX_TOKEN: ${{ secrets.DBX_TOKEN }}
