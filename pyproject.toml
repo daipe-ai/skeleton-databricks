@@ -90,6 +90,7 @@ pycodestyle_magic = "^0.5"
 pyfony-core = "^0.8.1"
 dbx-deploy = "^1.2.0"
 lineage-bundle = "^1.0.2"
+jobs-bundle = "^0.4.0"
 
 [pyfony.bootstrap]
 
