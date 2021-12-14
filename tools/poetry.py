@@ -1,4 +1,9 @@
 # Databricks notebook source
+# MAGIC %md
+# MAGIC <a href="$../index">Back to index</a>
+
+# COMMAND ----------
+
 dbutils.widgets.dropdown("1. poetry action", choices=["add", "update", "remove"], defaultValue="add")
 dbutils.widgets.text("2. package", defaultValue="")
 poetry_action = dbutils.widgets.get("1. poetry action")
@@ -12,7 +17,7 @@ if not package:
 # COMMAND ----------
 
 # MAGIC %sh
-# MAGIC pip install benvy==1.2.2b1
+# MAGIC %run ../bootstrap/install_benvy
 
 # COMMAND ----------
 
