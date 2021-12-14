@@ -1,0 +1,7 @@
+#!/bin/bash
+
+ENV=$(basename "$0")
+
+CUSTOM_VAR=$1
+
+# daipe dbx:job:create-or-update job_identifier --env="$ENV" --custom_var="$CUSTOM_VAR"

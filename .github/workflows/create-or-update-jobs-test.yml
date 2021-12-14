@@ -1,0 +1,17 @@
+name: Test pipeline
+on:
+  pull_request:
+
+jobs:
+  build:
+    uses: daipe-ai/skeleton-databricks/.github/workflows/build.yml@master
+
+  deploy:
+    needs: build
+    uses: daipe-ai/skeleton-databricks/.github/workflows/run_command.yml@master
+    with:
+      command: bash ./tools/_jobs/test ${{ github.head_ref }}
+      env: test
+    secrets:
+      DBX_URL: ${{ secrets.DBX_URL }}
+      DBX_TOKEN: ${{ secrets.DBX_TOKEN }}
