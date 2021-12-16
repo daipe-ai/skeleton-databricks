@@ -1,4 +1,4 @@
-name: Prod pipeline
+name: Deploy jobs to prod
 on:
   release:
     types: [published]

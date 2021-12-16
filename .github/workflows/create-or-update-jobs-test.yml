@@ -1,4 +1,4 @@
-name: Test pipeline
+name: Deploy jobs to test
 on:
   pull_request:
 
