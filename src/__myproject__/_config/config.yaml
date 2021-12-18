@@ -2,9 +2,6 @@ parameters:
   datalake:
     base_path: '/%kernel.environment%'
 
-  loans:
-    repayments_csv_path: 'dbfs:/RepaymentsData.csv'
-
   # overrides default bundle settings defined in site-packages/databricksbundle/_config/config.yaml
   #databricksbundle:
   #  databricks_connect:
