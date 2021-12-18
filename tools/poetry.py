@@ -16,7 +16,6 @@ if not package:
 
 # COMMAND ----------
 
-# MAGIC %sh
 # MAGIC %run ../bootstrap/install_benvy
 
 # COMMAND ----------
