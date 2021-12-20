@@ -39,7 +39,7 @@ def create_or_update_job(command: JobCreateOrUpdateCommand, identifier: str):
 
 @notebook_function(get_widget_value("job"), "%jobsbundle.jobs%")
 def create_job(job: str, jobs, command: JobCreateOrUpdateCommand):
-    if job == "all":
+    if job == "<all>":
         for job in jobs:
             create_or_update_job(command, job)
     else:
