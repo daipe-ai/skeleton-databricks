@@ -10,6 +10,6 @@ jobs:
     needs: build
     uses: daipe-ai/daipe-project-ci-cd/.github/workflows/run_command.yml@v1
     with:
-      command: daipe dbx:repo:update --env=test --repo-url=${{ github.server_url }}/${{ github.repository }}.git --branch=${{ github.head_ref }} --repo-name=${{ github.head_ref }}
+      command: daipe dbx:repo:update --env=test --repo-url=${{ github.server_url }}/${{ github.repository }}.git --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --force
     secrets:
       DBX_TOKEN: ${{ secrets.DBX_TOKEN }}
