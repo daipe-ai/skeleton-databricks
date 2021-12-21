@@ -1,0 +1,30 @@
+parameters:
+  jobs:
+    notebooks:
+      base_dir: '%databricks.repo.base_dir%/src/%daipe.root_module.name%'
+    cluster:
+      spark_version: "9.1.x-scala2.12"
+      node_type_id: "Standard_DS3_v2"
+      num_workers: 0
+      spark_env_vars:
+        APP_ENV: "%kernel.environment%"
+
+  jobsbundle:
+    databricks:
+      notifications:
+        on_failure: []
+
+#    jobs:
+#      my_pipeline:
+#        name: '{identifier} - %databricks.job.suffix%'
+#        tasks:
+#          - task_key: my_notebook_1
+#            notebook_task:
+#              notebook_path: '%jobs.notebooks.base_dir%/my_notebook_1'
+#            new_cluster: '%jobs.cluster%'
+#          - task_key: 'my_notebook_2'
+#            depends_on:
+#              - task_key: 'my_notebook_1'
+#            notebook_task:
+#              notebook_path: '%jobs.notebooks.base_dir%/my_notebook_1'
+#            new_cluster: '%jobs.cluster%'

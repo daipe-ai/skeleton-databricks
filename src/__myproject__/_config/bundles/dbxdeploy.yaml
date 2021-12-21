@@ -3,3 +3,6 @@ parameters:
     databricks:
       host: '%databricks.address%'
       token: '%env(DBX_TOKEN)%'
+    target:
+      repo:
+        base_dir: "%databricks.repo.base_dir%"
