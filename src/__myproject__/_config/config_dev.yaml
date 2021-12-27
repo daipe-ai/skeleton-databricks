@@ -3,4 +3,4 @@ imports:
 
 parameters:
   databricks:
-    address: '[Your workspace address]'
+    address: 'https://adb-8328309645514519.19.azuredatabricks.net/'

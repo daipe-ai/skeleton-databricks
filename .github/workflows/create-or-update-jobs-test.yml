@@ -11,7 +11,5 @@ jobs:
     uses: daipe-ai/daipe-project-ci-cd/.github/workflows/run_command.yml@v1
     with:
       command: bash ./tools/_jobs/test ${{ github.head_ref }}
-      env: test
     secrets:
-      DBX_URL: ${{ secrets.DBX_URL }}
       DBX_TOKEN: ${{ secrets.DBX_TOKEN }}
