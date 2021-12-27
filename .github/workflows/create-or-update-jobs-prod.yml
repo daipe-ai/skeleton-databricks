@@ -12,7 +12,5 @@ jobs:
     uses: daipe-ai/daipe-project-ci-cd/.github/workflows/run_command.yml@v1
     with:
       command: bash ./tools/_jobs/prod ${{ github.event.repository.name }}
-      env: prod
     secrets:
-      DBX_URL: ${{ secrets.DBX_URL }}
       DBX_TOKEN: ${{ secrets.DBX_TOKEN }}
