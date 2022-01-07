@@ -1,20 +1,20 @@
 variables:
   ${{ if or(eq(variables['Build.SourceBranchName'], 'master'), startswith(variables['Build.SourceBranchName'], 'feature-'), startswith(variables['Build.SourceBranchName'], 'hotfix-')) }}:
     ENV: 'dev'
-    CURRENT_BRANCH: $[ replace(variables['Build.SourceBranch'], 'refs/heads/', '') ]
     DEPLOY_COMMAND: ''
 
   ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
     ENV: 'test'
     SERVICE_CONNECTION_NAME: '<service_connection_name>'
     REPO_URL: '<azure_devops_repo_url>'
+    REPO_NAME: $[ variables['Build.Repository.Name'] ]
     CURRENT_BRANCH: $[ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') ]
-    DEPLOY_COMMAND: 'daipe dbx:repo:update --env=$(ENV) --repo-url $(REPO_URL) --branch $(CURRENT_BRANCH) --repo-name $(CURRENT_BRANCH)'
+    DEPLOY_COMMAND: 'daipe dbx:repo:update --env=$(ENV) --repo-url $(REPO_URL) --repo-name $(REPO_NAME) --branch $(CURRENT_BRANCH) --force'
 
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags/') }}:
     ENV: 'prod'
     SERVICE_CONNECTION_NAME: '<service_connection_name>'
     REPO_URL: '<azure_devops_repo_url>'
+    REPO_NAME: $[ variables['Build.Repository.Name'] ]
     CURRENT_TAG: $[ replace(variables['System.PullRequest.SourceBranch'], 'refs/tags/', '') ]
-    CURRENT_BRANCH: 'master'
-    DEPLOY_COMMAND: 'daipe dbx:repo:update --env=$(ENV) --repo-url $(REPO_URL) --tag $(CURRENT_TAG) --repo-name $(CURRENT_BRANCH)'
+    DEPLOY_COMMAND: 'daipe dbx:repo:update --env=$(ENV) --repo-url $(REPO_URL) --repo-name $(REPO_NAME) --tag $(CURRENT_TAG) --force'
