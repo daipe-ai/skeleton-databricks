@@ -259,7 +259,7 @@ simpleeval = ">=0.9.10,<1.0.0"
 
 [[package]]
 name = "dbx-deploy"
-version = "1.3.0"
+version = "1.3.1"
 description = "Databricks Deployment Tool"
 category = "dev"
 optional = false
@@ -1475,7 +1475,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.10"
-content-hash = "39fe8b29d22ecadee8d66ed1e25d130ff6ea997a197f6c00ad41c68b86a8f191"
+content-hash = "653f71b91e6116a9aed8a09497e4329c8a057e6f3569da1ea3f94457f379b2fa"
 
 [metadata.files]
 appdirs = [
@@ -1646,7 +1646,7 @@ datalake-bundle = [
     {file = "datalake_bundle-1.2.2-py3-none-any.whl", hash = "sha256:0da33499bfc095fa91a1331f38299bf628e63d5cc13272f6f0a52f5dc16e34dc"},
 ]
 dbx-deploy = [
-    {file = "dbx_deploy-1.3.0-py3-none-any.whl", hash = "sha256:662271e0542b9f3aaa3c38bc5ab3182f606209177a730e122ac77cc893b467b1"},
+    {file = "dbx_deploy-1.3.1-py3-none-any.whl", hash = "sha256:147d75de1b606cb07e3bc2e9a55a94f4e76cbb42950c0f28cb51dc262f24e990"},
 ]
 dbx-notebook-exporter = [
     {file = "dbx-notebook-exporter-0.4.1.tar.gz", hash = "sha256:45fc607bdbd919db425b5a03417a9b7b722c25c92c633c353dbbb510ec0d193d"},

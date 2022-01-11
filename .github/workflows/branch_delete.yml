@@ -6,6 +6,6 @@ jobs:
   delete:
     uses: daipe-ai/daipe-project-ci-cd/.github/workflows/run_command.yml@v1
     with:
-      command: daipe dbx:repo:delete --env=test --repo-url=${{ github.server_url }}/${{ github.repository }}.git --repo-name=${{ github.event.repository.name }} --branch=${{ github.event.ref }}
+      command: daipe dbx:repo:delete --env=test --repo-name=${{ github.event.repository.name }} --branch=${{ github.event.ref }}
     secrets:
       DBX_TOKEN: ${{ secrets.DBX_TOKEN }}
