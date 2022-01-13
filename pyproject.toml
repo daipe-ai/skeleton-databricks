@@ -88,13 +88,14 @@ poethepoet = ">=0.9.0,<1.0.0"
 flake8 = "3.7.*"
 pep8-naming = ">=0.11.1,<1.0.0"
 pycodestyle_magic = "^0.5"
-pyfony-core = "^0.8.1"
+pyfony-core = "^0.8.2"
 dbx-deploy = "^1.3.1"
 lineage-bundle = "^1.0.2"
 jobs-bundle = "^0.5.1"
 
 [pyfony.bootstrap]
+root_module_name_search_exclude=["daipe"]
 
 [tool.poe.tasks]
 flake8 = "flake8 --ignore=E501,E305,E302,F403,F405,W503 src"
-container-check = { shell = "python src/$(ls src)/ContainerTest.py" }
+container-check = { shell = "python src/$(ls -I daipe.py src)/ContainerTest.py" }
