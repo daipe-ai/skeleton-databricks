@@ -16,7 +16,7 @@ if not package:
 
 # COMMAND ----------
 
-# MAGIC %run ../bootstrap/install_benvy
+# MAGIC %run ../bootstrap/bootstrap_base
 
 # COMMAND ----------
 
@@ -25,3 +25,9 @@ if not package:
 # COMMAND ----------
 
 # MAGIC %poetry $poetry_action $package
+
+# COMMAND ----------
+
+from poetry_utils.unify_imports import unify_imports
+
+unify_imports()
