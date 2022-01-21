@@ -32,7 +32,7 @@ jobs:
       - name: Replace placeholders
         run: |
           sed -i 's/t__myproject__t/daipe-project/g' pyproject.toml
-          sed "s/address:.*azuredatabricks.net.*/address: \'[Your workspace address]\'/g" src/$(ls -I daipe.py src)/_config/config_*.yaml
+          sed -i "s/address:.*azuredatabricks.net.*/address: \'[Your workspace address]\'/g" src/$(ls -I daipe.py src)/_config/config_*.yaml
           mv src/__myproject__ src/daipeproject
 
       - name: Create Base Template
