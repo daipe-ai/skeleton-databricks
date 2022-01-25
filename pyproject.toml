@@ -95,22 +95,27 @@ pylint = "^2.12.2"
 root_module_name_search_exclude=["daipe"]
 
 [tool.pylint.basic]
+const-naming-style = "snake_case"
+class-naming-style = "any"
 module-rgx = "(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$"
 
 [tool.pylint.messages_control]
-max-line-length = 140
 disable = [
-    "missing-docstring",
-    "wrong-import-order",
+    "bad-continuation",
+    "bare-except",
+    "broad-except",
+    "consider-using-set-comprehension",
     "duplicate-code",
     "line-too-long",
-    "bad-continuation",
-    "too-many-arguments",
-    "too-few-public-methods",
-    "ungrouped-imports",
+    "missing-docstring",
     "no-self-use",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "ungrouped-imports",
+    "unnecessary-comprehension",
+    "wrong-import-order",
 ]
-good-names = ["df", "sc", "i", "n"]
+good-names = ["e", "i", "k", "v", "df"]
 
 [tool.poe.tasks]
 pylint = "pylint src"
