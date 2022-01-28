@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-PENVY_VERSION="1.2.2"
-BENVY_VERSION="1.3.1"
+PENVY_VERSION="1.2.3"
+BENVY_VERSION="1.3.2"
 POSSIBLE_PATHS_LIST_URL="https://raw.githubusercontent.com/pyfony/penvy/master/src/penvy/conda/conda_executable_paths.txt"
 
 resolve_conda_executable_path() {
