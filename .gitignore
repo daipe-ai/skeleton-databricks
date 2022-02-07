@@ -9,4 +9,5 @@ build
 *-checkpoint.py
 .idea/workspace.xml
 .env
+dependencies/*
 !.gitkeep
