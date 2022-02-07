@@ -1,5 +1,5 @@
 parameters:
   jobsbundle:
     databricks:
-      host: '%databricks.address%'
+      host: '%daipeproject.databricks.address%'
       token: '%env(DBX_TOKEN)%'
