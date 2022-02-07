@@ -1,12 +1,13 @@
 parameters:
-  datalake:
-    base_path: '/%kernel.environment%'
+  daipeproject:
+    datalake:
+      base_path: '/%kernel.environment%'
 
   # overrides default bundle settings defined in site-packages/databricksbundle/_config/config.yaml
   #databricksbundle:
   #  databricks_connect:
   #    connection:
-  #      address: '%databricks.address%'
+  #      address: '%daipeproject.databricks.address%'
   #      cluster_id: '[Your cluster ID]'
 
   # overrides default bundle settings defined in site-packages/datalakebundle/_config/config.yaml
@@ -14,5 +15,5 @@ parameters:
     table:
       name_template: '%kernel.environment%_{identifier}'
       defaults:
-        base_path: '%datalake.base_path%' # from config.yaml
+        base_path: '%daipeproject.datalake.base_path%' # from config.yaml
         target_path: !expr 'base_path + "/" + db_identifier + "/" + table_identifier + ".delta"'
