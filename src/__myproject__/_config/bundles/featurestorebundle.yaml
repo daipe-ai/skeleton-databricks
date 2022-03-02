@@ -1,12 +1,12 @@
 parameters:
   featurestorebundle:
     entities:
-      #<entity_name>:
-      #  id_column: "<id_column_name>"
-      #  id_column_type: "<type>"
-    target:
-      #table:
-      #  path_template: 'abfss://sdm@adapczpx360lakeg2prod.dfs.core.windows.net/target_store_v2'
+    #  <entity_name>:
+    #    id_column: "<id_column_name>"
+    #    id_column_type: "<type>"
+    #target:
+    #  table:
+    #  path_template: 'abfss://sdm@adapczpx360lakeg2prod.dfs.core.windows.net/target_store_v2'
 
     widgets:
       defaults:
@@ -17,5 +17,5 @@ parameters:
     time_windows: ["30d", "90d"]
     orchestration:
       stages:
-        stage1:
-          #- '/Repos/dependencies/<repo_name>/src/<module_name>/path/to/notebook'
+      #  stage1:
+      #    - '/Repos/dependencies/<repo_name>/src/<module_name>/path/to/notebook'
