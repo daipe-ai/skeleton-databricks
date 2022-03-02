@@ -4,6 +4,10 @@
 
 # COMMAND ----------
 
+# MAGIC %run ../bootstrap/bootstrap_base
+
+# COMMAND ----------
+
 dbutils.widgets.dropdown("1. poetry action", choices=["add", "update", "remove"], defaultValue="add")
 dbutils.widgets.text("2. package", defaultValue="")
 poetry_action = dbutils.widgets.get("1. poetry action")
@@ -13,10 +17,6 @@ package = dbutils.widgets.get("2. package")
 
 if not package:
     dbutils.notebook.exit(0)
-
-# COMMAND ----------
-
-# MAGIC %run ../bootstrap/bootstrap_base
 
 # COMMAND ----------
 

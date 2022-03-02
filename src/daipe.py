@@ -4,6 +4,11 @@
 
 # pylint: disable=unused-import, reimported
 
+# imports from daipecore
+from daipecore.decorator.notebook_function import notebook_function  # noqa: F401
+from daipecore.widgets.Widgets import Widgets  # noqa: F401
+from daipecore.widgets.get_widget_value import get_widget_value  # noqa: F401
+
 # imports from datalakebundle
 from daipecore.decorator.notebook_function import notebook_function  # noqa: F401
 from datalakebundle.notebook.decorator.transformation import transformation  # noqa: F401
@@ -35,13 +40,3 @@ from datalakebundle.table.write.table_overwrite import table_overwrite  # noqa: 
 from datalakebundle.table.write.table_upsert import table_upsert  # noqa: F401
 from datalakebundle.table.read.table_reader import read_table  # noqa: F401
 from datalakebundle.table.schema.TableSchema import TableSchema  # noqa: F401
-
-# imports from daipecore
-from daipecore.decorator.notebook_function import notebook_function  # noqa: F401
-from daipecore.widgets.Widgets import Widgets  # noqa: F401
-from daipecore.widgets.get_widget_value import get_widget_value  # noqa: F401
-
-# imports from featurestorebundle
-# pylint: disable = unused-import
-
-import featurestorebundle.general_imports as fs
