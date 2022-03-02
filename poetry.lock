@@ -89,6 +89,14 @@ python-dateutil = ">=2.1,<3.0.0"
 urllib3 = {version = ">=1.25.4,<1.26", markers = "python_version != \"3.4\""}
 
 [[package]]
+name = "cached-property"
+version = "1.5.2"
+description = "A decorator for caching properties in classes."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "certifi"
 version = "2020.12.5"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -1507,7 +1515,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.10"
-content-hash = "f5af4481feb4be3e2c1dccc0c349bbd70fa519aac4d43256964d59e3948c06f9"
+content-hash = "50834588e8375e1c0694301b75342219f2c8361de500e23bc12762389a333c2a"
 
 [metadata.files]
 appdirs = [
@@ -1541,6 +1549,10 @@ boto3 = [
 botocore = [
     {file = "botocore-1.19.7-py2.py3-none-any.whl", hash = "sha256:1481d6d3ccb77cb7cd97395110408238f3ab93b0d823156c7a2fb697604eb50d"},
     {file = "botocore-1.19.7.tar.gz", hash = "sha256:ab59f842797cbd09ee7d9e3f353bb9546f428853d94db448977dd554320620b3"},
+]
+cached-property = [
+    {file = "cached-property-1.5.2.tar.gz", hash = "sha256:9fa5755838eecbb2d234c3aa390bd80fbd3ac6b6869109bfc1b499f7bd89a130"},
+    {file = "cached_property-1.5.2-py2.py3-none-any.whl", hash = "sha256:df4f613cf7ad9a588cc381aaf4a512d26265ecebd5eb9e1ba12f1319eb85a6a0"},
 ]
 certifi = [
     {file = "certifi-2020.12.5-py2.py3-none-any.whl", hash = "sha256:719a74fb9e33b9bd44cc7f3a8d94bc35e4049deebe19ba7d8e108280cfd59830"},
