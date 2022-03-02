@@ -52,7 +52,8 @@ jobs:
           TEMPLATE_CREATOR_USERNAME: ${{ secrets.TEMPLATE_CREATOR_USERNAME }}
           TEMPLATE_CREATOR_TOKEN: ${{ secrets.TEMPLATE_CREATOR_TOKEN }}
         run: |
-          poetry remove feature-store-bundle --lock
+          sed -i '/feature-store-bundle/d' ./pyproject.toml
+          poetry lock --no-update
           poe unify-imports
           git add pyproject.toml poetry.lock src/daipeproject/daipe.py ':!src/daipeproject/_orchestration' ':!src/daipeproject/_config/bundles/featurestorebundle.yaml'
           git commit --amend -m "Initial commit"
