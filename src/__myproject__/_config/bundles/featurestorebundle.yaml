@@ -1,12 +1,15 @@
 parameters:
   featurestorebundle:
+    base_path: 'dbfs:/path/to/feature_store'
     entities:
     #  <entity_name>:
     #    id_column: "<id_column_name>"
     #    id_column_type: "<type>"
-    #target:
-    #  table:
-    #  path_template: 'abfss://sdm@adapczpx360lakeg2prod.dfs.core.windows.net/target_store_v2'
+    target:
+      table:
+        path_template: 'dbfs:/path/to/{entity}_target_store.delta'
+      enum_table:
+        path: 'dbfs:/path/to/targets_enum.delta'
 
     widgets:
       defaults:
@@ -14,8 +17,10 @@ parameters:
         target_date_from: "20000101"
         target_date_to: "20220101"
         number_of_time_units: "-5d"
-    time_windows: ["30d", "90d"]
+    time_windows: ["14d", "30d", "90d"]
     orchestration:
       stages:
       #  stage1:
       #    - '/Repos/dependencies/<repo_name>/src/<module_name>/path/to/notebook'
+      #  stage2:
+      #    - '%databricksbundle.project_root.repo.path%/src/%daipe.root_module.name%/path/to/notebook'
