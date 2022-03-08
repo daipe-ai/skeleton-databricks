@@ -1,0 +1,14 @@
+parameters:
+  root_module_path: '%databricksbundle.project_root.repo.path%/src/%daipe.root_module.name%'
+
+  featurestorebundle:
+    orchestration:
+      checkpoint_feature_results: False
+      checkpoint_before_merge: False
+      checkpoint_after_join: False
+      num_parallel: 8
+      stages:
+      #  stage1:
+      #    - '/Repos/dependencies/<repo_name>/src/<module_name>/path/to/notebook'
+      #  stage2:
+      #    - '%root_module_path%/path/to/notebook'

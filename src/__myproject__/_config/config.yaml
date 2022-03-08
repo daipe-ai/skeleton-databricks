@@ -1,5 +1,6 @@
 imports:
   - jobs.yaml
+  - orchestration.yaml
 
 parameters:
   daipeproject:
@@ -20,3 +21,23 @@ parameters:
       defaults:
         base_path: '%daipeproject.datalake.base_path%' # from config.yaml
         target_path: !expr 'base_path + "/" + db_identifier + "/" + table_identifier + ".delta"'
+
+  featurestorebundle:
+    base_path: 'dbfs:/path/to/feature_store'
+    entities:
+    #  <entity_name>:
+    #    id_column: "<id_column_name>"
+    #    id_column_type: "<type>"
+    target:
+      table:
+        path_template: 'dbfs:/path/to/{entity}_target_store.delta'
+      enum_table:
+        path: 'dbfs:/path/to/targets_enum.delta'
+
+    widgets:
+      defaults:
+        timestamp: "20220101"
+        target_date_from: "20000101"
+        target_date_to: "20220101"
+        number_of_time_units: "-5d"
+    time_windows: ["14d", "30d", "90d"]
