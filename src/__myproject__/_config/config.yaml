@@ -36,8 +36,8 @@ parameters:
 
     widgets:
       defaults:
-        timestamp: "20220101"
-        target_date_from: "20000101"
-        target_date_to: "20220101"
-        number_of_time_units: "-5d"
+        timestamp: "2022-01-01"
+        target_date_from: "2000-01-01"
+        target_date_to: "2022-01-01"
+        target_time_shift: "-5d"
     time_windows: ["14d", "30d", "90d"]

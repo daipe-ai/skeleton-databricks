@@ -372,7 +372,7 @@ protobuf = ">=3.7.0"
 
 [[package]]
 name = "feature-store-bundle"
-version = "2.0.0"
+version = "2.0.3"
 description = "Feature Store for the Daipe AI Platform"
 category = "main"
 optional = false
@@ -1724,7 +1724,7 @@ facets-overview = [
     {file = "facets_overview-1.0.0-py2.py3-none-any.whl", hash = "sha256:bda7e7b68ff68f5757af87b9cf8b76994ab15db08db2155e15e4eae58695f4ae"},
 ]
 feature-store-bundle = [
-    {file = "feature_store_bundle-2.0.0-py3-none-any.whl", hash = "sha256:1a39502ae62cbafb501e65c63128f4a6ce724efaad5251b086c57106a27d00d2"},
+    {file = "feature_store_bundle-2.0.3-py3-none-any.whl", hash = "sha256:64fce2425ba20cbce01da489fc4c8668354806328f69067ba48af785af4697db"},
 ]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
