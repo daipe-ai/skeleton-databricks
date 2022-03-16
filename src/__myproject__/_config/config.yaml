@@ -7,6 +7,10 @@ parameters:
     datalake:
       base_path: '/%kernel.environment%'
 
+    clickhouse:
+      host: "20.56.36.125"
+      port: 8123
+
   # overrides default bundle settings defined in site-packages/databricksbundle/_config/config.yaml
   #databricksbundle:
   #  databricks_connect:
