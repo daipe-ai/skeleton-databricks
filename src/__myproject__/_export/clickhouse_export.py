@@ -4,6 +4,7 @@
 # COMMAND ----------
 
 import os
+from typing import List
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as f
 from pyspark.dbutils import DBUtils
@@ -55,8 +56,8 @@ def check_ongoing_export(clickhouse: ClickhouseClient, table_names: dict, dbutil
 
 # COMMAND ----------
 
-@dp.transformation("%odapfeatures.clickhouse.excluded_columns%", display=False)
-def features_to_export(excluded_columns, feature_store: dp.fs.FeatureStore):
+@dp.transformation("%odapfeatures.export.excluded_columns%", display=False)
+def features_to_export(excluded_columns: List[str], feature_store: dp.fs.FeatureStore):
     return feature_store.get_latest(entity.name).drop(*excluded_columns)
 
 # COMMAND ----------
