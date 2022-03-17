@@ -3,7 +3,8 @@
 
 # COMMAND ----------
 
-from pyspark.sql import SparkSession, DataFrame
+import os
+from pyspark.sql import DataFrame
 from pyspark.sql import functions as f
 from pyspark.dbutils import DBUtils
 from clickhouse_driver import Client as ClickhouseClient
@@ -16,21 +17,7 @@ entity = dp.fs.get_entity()
 
 # COMMAND ----------
 
-@dp.notebook_function()
-def init_widgets(widgets: dp.Widgets):
-    widgets.add_text("config_url", "", "Config url")
-
-# COMMAND ----------
-
-@dp.notebook_function(dp.get_widget_value("config_url"))
-def load_config(config_url: str, logger: Logger, spark: SparkSession):
-    config = spark.read.json(config_url).collect()[0].asDict()
-    logger.info(f"Loaded config from {config_url}")
-    return config
-
-# COMMAND ----------
-
-@dp.notebook_function(load_config.result['env'])
+@dp.notebook_function(os.environ["APP_ENV"])
 def get_table_names(current_env: str):
     return {
         "main": f"featurestore_{current_env}",
@@ -63,14 +50,14 @@ def clickhouse_connection(clickhouse_host: str, secrets: dict):
 def check_ongoing_export(clickhouse: ClickhouseClient, table_names: dict, dbutils: DBUtils, logger: Logger):
     existing_tables = clickhouse.execute("SHOW TABLES")
     if (table_names["temp"],) in existing_tables:
-        logger.error("Clickhouse export is already ongoing in this environment.")
+        logger.error(f"Clickhouse export is already ongoing in this environment.")
         dbutils.notebook.exit(0)
 
 # COMMAND ----------
 
-@dp.transformation(load_config, display=False)
-def features_to_export(config: dict, feature_store: dp.fs.FeatureStore):
-    return feature_store.get_latest(entity.name, features=config["params"].export_columns)
+@dp.transformation("%odapfeatures.clickhouse.excluded_columns%", display=False)
+def features_to_export(excluded_columns, feature_store: dp.fs.FeatureStore):
+    return feature_store.get_latest(entity.name).drop(*excluded_columns)
 
 # COMMAND ----------
 
@@ -83,7 +70,7 @@ def features_to_export_with_conversions(df: DataFrame):
 # COMMAND ----------
 
 @dp.transformation(features_to_export_with_conversions, get_table_names, get_secrets, "%odapfeatures.clickhouse.host%", "%odapfeatures.clickhouse.port%")
-def write_features(df: DataFrame, table_names: dict, secrets: dict, clickhouse_host: str, clickhouse_port: int, logger: Logger):
+def write_features(df: DataFrame, table_names: dict, secrets: dict, clickhouse_host: str, clickhouse_port: int, dbutils: DBUtils, logger: Logger):
     logger.info(f"Writing features to ClickHouse database at {clickhouse_host}:{clickhouse_port}")
     (df.write
         .format("jdbc")
