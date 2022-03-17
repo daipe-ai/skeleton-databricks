@@ -50,7 +50,7 @@ def clickhouse_connection(clickhouse_host: str, secrets: dict):
 def check_ongoing_export(clickhouse: ClickhouseClient, table_names: dict, dbutils: DBUtils, logger: Logger):
     existing_tables = clickhouse.execute("SHOW TABLES")
     if (table_names["temp"],) in existing_tables:
-        logger.error(f"Clickhouse export is already ongoing in this environment.")
+        logger.error("Clickhouse export is already ongoing in this environment.")
         dbutils.notebook.exit(0)
 
 # COMMAND ----------
@@ -70,7 +70,7 @@ def features_to_export_with_conversions(df: DataFrame):
 # COMMAND ----------
 
 @dp.transformation(features_to_export_with_conversions, get_table_names, get_secrets, "%odapfeatures.clickhouse.host%", "%odapfeatures.clickhouse.port%")
-def write_features(df: DataFrame, table_names: dict, secrets: dict, clickhouse_host: str, clickhouse_port: int, dbutils: DBUtils, logger: Logger):
+def write_features(df: DataFrame, table_names: dict, secrets: dict, clickhouse_host: str, clickhouse_port: int, logger: Logger):
     logger.info(f"Writing features to ClickHouse database at {clickhouse_host}:{clickhouse_port}")
     (df.write
         .format("jdbc")
