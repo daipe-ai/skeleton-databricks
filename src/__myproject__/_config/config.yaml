@@ -7,6 +7,13 @@ parameters:
     datalake:
       base_path: '/%kernel.environment%'
 
+    clickhouse:
+      host:
+      port:
+
+    export:
+      excluded_columns:
+
   # overrides default bundle settings defined in site-packages/databricksbundle/_config/config.yaml
   #databricksbundle:
   #  databricks_connect:

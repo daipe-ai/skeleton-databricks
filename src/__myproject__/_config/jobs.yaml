@@ -19,13 +19,13 @@ parameters:
 #      my_pipeline:
 #        name: '{identifier} - %daipeproject.databricks.job.suffix%'
 #        tasks:
-#          - task_key: my_notebook_1
+#          - task_key: orchestration
 #            notebook_task:
-#              notebook_path: '%daipeproject.jobs.notebooks.base_dir%/my_notebook_1'
+#              notebook_path: '%daipeproject.jobs.notebooks.base_dir%/_orchestration/orchestrator'
 #            new_cluster: '%daipeproject.jobs.cluster%'
-#          - task_key: 'my_notebook_2'
+#          - task_key: 'clickhouse_export'
 #            depends_on:
-#              - task_key: 'my_notebook_1'
+#              - task_key: 'orchestration'
 #            notebook_task:
-#              notebook_path: '%daipeproject.jobs.notebooks.base_dir%/my_notebook_1'
+#              notebook_path: '%daipeproject.jobs.notebooks.base_dir%/_export/clickhouse_export'
 #            new_cluster: '%daipeproject.jobs.cluster%'
