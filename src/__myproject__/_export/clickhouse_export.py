@@ -4,11 +4,12 @@
 # COMMAND ----------
 
 import os
+import requests
+import json
 from typing import List
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as f
 from pyspark.dbutils import DBUtils
-from clickhouse_driver import Client as ClickhouseClient
 from logging import Logger
 import daipe as dp
 
@@ -37,26 +38,33 @@ def get_secrets(dbutils: DBUtils):
 
 # COMMAND ----------
 
-@dp.notebook_function("%odapfeatures.clickhouse.host%", get_secrets)
-def clickhouse_connection(clickhouse_host: str, secrets: dict):
-    return ClickhouseClient(
-        clickhouse_host,
-        user=secrets["user"],
-        password=secrets["pass"]
-    )
+@dp.notebook_function("%daipeproject.clickhouse.host%", "%daipeproject.clickhouse.port%")
+def get_clickhouse_address(host: str, port: int):
+    return {
+        "host": host,
+        "port": port,
+    }
 
 # COMMAND ----------
 
-@dp.notebook_function(clickhouse_connection, get_table_names)
-def check_ongoing_export(clickhouse: ClickhouseClient, table_names: dict, dbutils: DBUtils, logger: Logger):
-    existing_tables = clickhouse.execute("SHOW TABLES")
-    if (table_names["temp"],) in existing_tables:
+def execute_clickhouse_query(query: str):
+    response = requests.post(
+        f"http://{get_clickhouse_address.result['host']}:{get_clickhouse_address.result['port']}/",
+        params={"user": get_secrets.result["user"], "password": get_secrets.result["pass"], "default_format": "JSON"},
+        data=query)
+    return json.loads(response.content.decode("utf8") or "{}").get("data")
+
+# COMMAND ----------
+
+@dp.notebook_function(get_table_names)
+def check_ongoing_export(table_names: dict, dbutils: DBUtils, logger: Logger):
+    if execute_clickhouse_query(f"EXISTS {table_names['temp']}")[0]["result"]:
         logger.error("Clickhouse export is already ongoing in this environment.")
         dbutils.notebook.exit(0)
 
 # COMMAND ----------
 
-@dp.transformation("%odapfeatures.export.excluded_columns%", display=False)
+@dp.transformation("%daipeproject.export.excluded_columns%", display=False)
 def features_to_export(excluded_columns: List[str], feature_store: dp.fs.FeatureStore):
     return feature_store.get_latest(entity.name).drop(*excluded_columns)
 
@@ -70,7 +78,7 @@ def features_to_export_with_conversions(df: DataFrame):
 
 # COMMAND ----------
 
-@dp.transformation(features_to_export_with_conversions, get_table_names, get_secrets, "%odapfeatures.clickhouse.host%", "%odapfeatures.clickhouse.port%")
+@dp.transformation(features_to_export_with_conversions, get_table_names, get_secrets, "%daipeproject.clickhouse.host%", "%daipeproject.clickhouse.port%")
 def write_features(df: DataFrame, table_names: dict, secrets: dict, clickhouse_host: str, clickhouse_port: int, logger: Logger):
     logger.info(f"Writing features to ClickHouse database at {clickhouse_host}:{clickhouse_port}")
     (df.write
@@ -86,15 +94,14 @@ def write_features(df: DataFrame, table_names: dict, secrets: dict, clickhouse_h
 
 # COMMAND ----------
 
-@dp.notebook_function(clickhouse_connection, get_table_names)
-def rename_tables(clickhouse: ClickhouseClient, table_names: dict, logger: Logger):
-    existing_tables = clickhouse.execute("SHOW TABLES")
-    clickhouse.execute(f"DROP TABLE IF EXISTS {table_names['backup']}")
+@dp.notebook_function(get_table_names)
+def rename_tables(table_names: dict, logger: Logger):
+    execute_clickhouse_query(f"DROP TABLE IF EXISTS {table_names['backup']}")
 
-    if (table_names['main'],) in existing_tables:
-        clickhouse.execute(f"RENAME TABLE {table_names['main']} TO {table_names['backup']}")
+    if execute_clickhouse_query(f"EXISTS {table_names['main']}")[0]["result"]:
+        execute_clickhouse_query(f"RENAME TABLE {table_names['main']} TO {table_names['backup']}")
         logger.info(f"Table {table_names['backup']} updated with data from {table_names['main']}.")
 
-    clickhouse.execute(f"RENAME TABLE {table_names['temp']} TO {table_names['main']}")
+    execute_clickhouse_query(f"RENAME TABLE {table_names['temp']} TO {table_names['main']}")
 
     logger.info(f"Export successful, table saved as {table_names['main']}.")
