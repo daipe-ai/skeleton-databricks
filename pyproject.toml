@@ -82,7 +82,6 @@ databricks-bundle = "^1.3.1"
 datalake-bundle = "^1.2.2"
 daipe-core = "^1.4.1"
 feature-store-bundle = "^2.0.0"
-clickhouse-driver = "^0.2.3"
 
 [tool.poetry.dev-dependencies]
 databricks-connect = { url = "https://daipe-packages.s3.eu-central-1.amazonaws.com/databricks-connect-9.1.2.tar.gz" }
