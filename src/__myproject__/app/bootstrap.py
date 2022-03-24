@@ -3,10 +3,6 @@
 
 # COMMAND ----------
 
-# %install_master_package_whl
-
-# COMMAND ----------
-
 import os
 import IPython
 
