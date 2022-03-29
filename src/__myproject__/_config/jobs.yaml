@@ -4,28 +4,34 @@ parameters:
       notebooks:
         base_dir: '%daipeproject.databricks.repo.base_dir%/src/%daipe.root_module.name%'
       cluster:
-        spark_version: "9.1.x-scala2.12"
-        node_type_id: "Standard_DS3_v2"
-        num_workers: 0
-        spark_env_vars:
-          APP_ENV: "%kernel.environment%"
+        job_cluster_key: "default_cluster"
+        new_cluster:
+          spark_version: "9.1.x-scala2.12"
+          node_type_id: "Standard_DS3_v2"
+          num_workers: 2
+          spark_env_vars:
+            APP_ENV: "%kernel.environment%"
 
   jobsbundle:
     databricks:
       notifications:
         on_failure: []
 
-#    jobs:
-#      my_pipeline:
-#        name: '{identifier} - %daipeproject.databricks.job.suffix%'
-#        tasks:
-#          - task_key: orchestration
-#            notebook_task:
-#              notebook_path: '%daipeproject.jobs.notebooks.base_dir%/_orchestration/orchestrator'
-#            new_cluster: '%daipeproject.jobs.cluster%'
-#          - task_key: 'clickhouse_export'
-#            depends_on:
-#              - task_key: 'orchestration'
-#            notebook_task:
-#              notebook_path: '%daipeproject.jobs.notebooks.base_dir%/_export/clickhouse_export'
-#            new_cluster: '%daipeproject.jobs.cluster%'
+    jobs:
+      daily_pipeline:
+        name: '{identifier} - %daipeproject.databricks.job.suffix%'
+        job_clusters:
+          - '%daipeproject.jobs.cluster%'
+        tasks:
+          - task_key: 'feature_orchestration'
+            notebook_task:
+              notebook_path: '%daipeproject.jobs.notebooks.base_dir%/_orchestration/orchestrator'
+              base_parameters:
+                timestamp: "{{start_date}}"
+            job_cluster_key: '%daipeproject.jobs.cluster.job_cluster_key%'
+          - task_key: 'clickhouse_export'
+            depends_on:
+              - task_key: 'feature_orchestration'
+            notebook_task:
+              notebook_path: '%daipeproject.jobs.notebooks.base_dir%/_export/clickhouse_export'
+            job_cluster_key: '%daipeproject.jobs.cluster.job_cluster_key%'
