@@ -188,7 +188,7 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "daipe-core"
-version = "1.4.2"
+version = "1.4.3"
 description = "Daipe framework core"
 category = "main"
 optional = false
@@ -372,7 +372,7 @@ protobuf = ">=3.7.0"
 
 [[package]]
 name = "feature-store-bundle"
-version = "2.1.0b2"
+version = "2.1.0"
 description = "Feature Store for the Daipe AI Platform"
 category = "main"
 optional = false
@@ -1515,7 +1515,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.10"
-content-hash = "7d5cb017566d51c86cf9ae4991c858fe2b86972c6c97455736b4eaba3215570d"
+content-hash = "3e40aa1f6fa461ff9fe0178e5fd235c2c81ed275bea94c93d6d6398e2e5b0e7d"
 
 [metadata.files]
 appdirs = [
@@ -1676,7 +1676,7 @@ cython = [
     {file = "Cython-0.29.23.tar.gz", hash = "sha256:6a0d31452f0245daacb14c979c77e093eb1a546c760816b5eed0047686baad8e"},
 ]
 daipe-core = [
-    {file = "daipe_core-1.4.2-py3-none-any.whl", hash = "sha256:e641dd46e0be75e408997f12f5426a787a06b1998c2b7b1e1025f27f81eb6e0d"},
+    {file = "daipe_core-1.4.3-py3-none-any.whl", hash = "sha256:6e583cad2058af9da58625549008205d6f247e56e242cbbaab2671fad19d0614"},
 ]
 databricks-bundle = [
     {file = "databricks_bundle-1.4.3-py3-none-any.whl", hash = "sha256:908f552d0d0d6b01786014f06fd137b45ab758398c9ba116c3c595e0adc28992"},
@@ -1724,7 +1724,7 @@ facets-overview = [
     {file = "facets_overview-1.0.0-py2.py3-none-any.whl", hash = "sha256:bda7e7b68ff68f5757af87b9cf8b76994ab15db08db2155e15e4eae58695f4ae"},
 ]
 feature-store-bundle = [
-    {file = "feature_store_bundle-2.1.0b2-py3-none-any.whl", hash = "sha256:01ac8857245519ae9dc423d1243d9e0a6c1408cec6be8531ec83c073ac1111fc"},
+    {file = "feature_store_bundle-2.1.0-py3-none-any.whl", hash = "sha256:ecf5fe00cc5db60912705c3d3695b3d511fb658b3722458ed5bfee0b64a9ebf6"},
 ]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
