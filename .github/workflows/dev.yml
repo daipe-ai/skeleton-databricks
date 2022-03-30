@@ -7,3 +7,4 @@ jobs:
     uses: daipe-ai/daipe-project-ci-cd/.github/workflows/build.yml@v1
     with:
       pylint_enabled: true
+      check_displays: true
