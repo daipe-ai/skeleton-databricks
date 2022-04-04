@@ -6,12 +6,25 @@
 import os
 import requests
 import json
-from typing import List
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as f
 from pyspark.dbutils import DBUtils
 from logging import Logger
 import daipe as dp
+
+# COMMAND ----------
+
+@dp.notebook_function()
+def init_widgets(widgets: dp.Widgets):
+    widgets.add_text("config_url", "", "Config url")
+
+# COMMAND ----------
+
+@dp.notebook_function(dp.get_widget_value("config_url"))
+def load_config(config_url: str, logger: Logger, spark: SparkSession):
+    config = spark.read.json(config_url).collect()[0].asDict()
+    logger.info(f"Loaded config from {config_url}")
+    return config
 
 # COMMAND ----------
 
@@ -64,9 +77,10 @@ def check_ongoing_export(table_names: dict, dbutils: DBUtils, logger: Logger):
 
 # COMMAND ----------
 
-@dp.transformation("%daipeproject.export.excluded_columns%", display=False)
-def features_to_export(excluded_columns: List[str], feature_store: dp.fs.FeatureStore):
-    return feature_store.get_latest(entity.name).drop(*excluded_columns)
+@dp.transformation(load_config, display=False)
+def features_to_export(config: dict, feature_store: dp.fs.FeatureStore):
+    features = config["params"].export_columns
+    return feature_store.get_latest(entity.name, features=features)
 
 # COMMAND ----------
 
@@ -74,7 +88,7 @@ def features_to_export(excluded_columns: List[str], feature_store: dp.fs.Feature
 def features_to_export_with_conversions(df: DataFrame):
     return df.select(*[
         f.col(c).cast("float") if ("double" in t or "decimal" in t) else f.col(c) for c, t in df.dtypes
-    ])
+    ]).replace(float('nan'), None)
 
 # COMMAND ----------
 
