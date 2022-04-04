@@ -88,7 +88,7 @@ def features_to_export(config: dict, feature_store: dp.fs.FeatureStore):
 def features_to_export_with_conversions(df: DataFrame):
     return df.select(*[
         f.col(c).cast("float") if ("double" in t or "decimal" in t) else f.col(c) for c, t in df.dtypes
-    ])
+    ]).replace(float('nan'), None)
 
 # COMMAND ----------
 
