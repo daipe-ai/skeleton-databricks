@@ -29,14 +29,20 @@ parameters:
   featurestorebundle:
     base_path: 'dbfs:/path/to/feature_store'
     entities:
-    #  <entity_name>:
-    #    id_column: "<id_column_name>"
-    #    id_column_type: "<type>"
+      #test:
+      #  id_column: "id"
+      #  id_column_type: "string"
+    feature:
+      backend: 'delta_table'
+    metadata:
+      backend: 'delta_table'
     target:
       table:
         path_template: 'dbfs:/path/to/{entity}_target_store.delta'
       enum_table:
+        #name: 'test'
         path: 'dbfs:/path/to/targets_enum.delta'
+      backend: 'delta_table'
 
     widgets:
       defaults:

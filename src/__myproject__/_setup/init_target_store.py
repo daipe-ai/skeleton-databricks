@@ -43,11 +43,18 @@ targets_table_schema = t.StructType(
 
 # COMMAND ----------
 
-@dp.notebook_function()
-def init_targets_table(logger: Logger, table_names: TableNames, spark: SparkSession):
+@dp.notebook_function("%featurestorebundle.target%", "%featurestorebundle.db_name%")
+def init_targets_table(target_config, db_name, logger: Logger, table_names: TableNames, spark: SparkSession):
     targets_path = table_names.get_targets_path(entity.name)
+    targets_table = table_names.get_targets_table_name(entity.name)
     logger.info("target store schema: " + str(targets_table_schema))
-    spark.createDataFrame([], schema=targets_table_schema).write.format("delta").save(targets_path)
+    
+    write = spark.createDataFrame([], schema=targets_table_schema).write.option("path", targets_path).format("delta")
+    
+    if target_config.backend == "delta_table":
+        write.saveAsTable(f"{db_name}.{targets_table}")
+    else:
+        write.save()
 
 # COMMAND ----------
 
@@ -66,8 +73,16 @@ targets_enum_table_schema = t.StructType(
 
 # COMMAND ----------
 
-@dp.notebook_function()
-def init_targets_enum_table(logger: Logger, table_names: TableNames, spark: SparkSession):
+@dp.notebook_function("%featurestorebundle.target%", "%featurestorebundle.db_name%")
+def init_targets_enum_table(target_config, db_name, logger: Logger, table_names: TableNames, spark: SparkSession):
     targets_enum_path = table_names.get_targets_enum_path()
+    targets_enum_table = table_names.get_targets_enum_table_name()
     logger.info("target store enum schema: " + str(targets_enum_table_schema))
     spark.createDataFrame([], schema=targets_enum_table_schema).write.format("delta").save(targets_enum_path)
+    
+    write = spark.createDataFrame([], schema=targets_enum_table_schema).write.option("path", targets_enum_path + "1").format("delta")
+    
+    if target_config.backend == "delta_table":
+        write.saveAsTable(f"{db_name}.{targets_enum_table}")
+    else:
+        write.save()
