@@ -125,8 +125,8 @@ def rename_tables(table_names: dict, logger: Logger):
 @dp.notebook_function(features_to_export_with_conversions, get_table_names)
 def compare_counts(df: DataFrame, table_names: dict, logger: Logger):
     fs_count = df.count()
-    clickhouse_count = execute_clickhouse_query(f"SELECT COUNT(*) from {table_names['main']}")[0]["count()"]
-    if int(fs_count) == int(clickhouse_count):
+    clickhouse_count = int(execute_clickhouse_query(f"SELECT COUNT(*) from {table_names['main']}")[0]["count()"])
+    if fs_count == clickhouse_count:
         logger.info(f"Featurestore row count equals to Clickhouse export row count ({fs_count})")
     else:
-        logger.warning(f"Featurestore row count is not equal to export row count. Featurestore: {fs_count} | Clickhouse: {clickhouse_count}")
+        raise Exception(f"Featurestore row count is not equal to export row count. Featurestore: {fs_count} | Clickhouse: {clickhouse_count}")
