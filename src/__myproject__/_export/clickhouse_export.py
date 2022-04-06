@@ -119,3 +119,14 @@ def rename_tables(table_names: dict, logger: Logger):
     execute_clickhouse_query(f"RENAME TABLE {table_names['temp']} TO {table_names['main']}")
 
     logger.info(f"Export successful, table saved as {table_names['main']}.")
+
+# COMMAND ----------
+
+@dp.notebook_function(features_to_export_with_conversions, get_table_names)
+def compare_counts(df: DataFrame, table_names: dict, logger: Logger):
+    fs_count = df.count()
+    clickhouse_count = int(execute_clickhouse_query(f"SELECT COUNT(*) from {table_names['main']}")[0]["count()"])
+    if fs_count == clickhouse_count:
+        logger.info(f"Featurestore row count equals to Clickhouse export row count ({fs_count})")
+    else:
+        raise Exception(f"Featurestore row count is not equal to export row count. Featurestore: {fs_count} | Clickhouse: {clickhouse_count}")
