@@ -29,18 +29,7 @@ from pyspark.sql import DataFrame #, functions as f
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### 3. Get entity and feature decorator
-# MAGIC Minimum imports, feel free to import other modules here
-
-# COMMAND ----------
-
-entity = dp.fs.get_entity()
-feature = dp.fs.feature_decorator_factory.create(entity)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC #### 4. Create control widgets
+# MAGIC #### 3. Create control widgets
 # MAGIC Learn about control widgets [here](https://www.notion.so/datasentics/Core-functionality-aafe501fa561496abd72c062532f16ec#e068537fc9f24f19a999ec1dc2952c7e)
 
 # COMMAND ----------
@@ -48,6 +37,17 @@ feature = dp.fs.feature_decorator_factory.create(entity)
 @dp.notebook_function()
 def init_widgets(widgets_factory: dp.fs.WidgetsFactory):
     widgets_factory.create()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #### 4. Get entity and feature decorator
+# MAGIC Minimum imports, feel free to import other modules here
+
+# COMMAND ----------
+
+entity = dp.fs.get_entity()
+feature = dp.fs.feature_decorator_factory.create(entity)
 
 # COMMAND ----------
 
