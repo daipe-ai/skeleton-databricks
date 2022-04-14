@@ -11,22 +11,8 @@ parameters:
       host:
       port:
 
-  # overrides default bundle settings defined in site-packages/databricksbundle/_config/config.yaml
-  #databricksbundle:
-  #  databricks_connect:
-  #    connection:
-  #      address: '%daipeproject.databricks.address%'
-  #      cluster_id: '[Your cluster ID]'
-
-  # overrides default bundle settings defined in site-packages/datalakebundle/_config/config.yaml
-  datalakebundle:
-    table:
-      name_template: '%kernel.environment%_{identifier}'
-      defaults:
-        base_path: '%daipeproject.datalake.base_path%' # from config.yaml
-        target_path: !expr 'base_path + "/" + db_identifier + "/" + table_identifier + ".delta"'
-
   featurestorebundle:
+    db_path: '%kernel.environment%_odap_feature_store'
     base_path: 'dbfs:/path/to/feature_store'
     entities:
       #test:
@@ -37,11 +23,6 @@ parameters:
     metadata:
       backend: 'delta_table'
     target:
-      table:
-        path_template: 'dbfs:/path/to/{entity}_target_store.delta'
-      enum_table:
-        #name: 'test'
-        path: 'dbfs:/path/to/targets_enum.delta'
       backend: 'delta_table'
 
     widgets:
@@ -51,3 +32,10 @@ parameters:
         target_date_to: "2022-01-01"
         target_time_shift: "-5d"
     time_windows: ["14d", "30d", "90d"]
+
+  datalakebundle:
+    table:
+      name_template: '%kernel.environment%_{identifier}'
+      defaults:
+        base_path: '%daipeproject.datalake.base_path%'
+        target_path: !expr 'base_path + "/" + db_identifier + "/" + table_identifier + ".delta"'
