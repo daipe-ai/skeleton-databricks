@@ -1021,7 +1021,7 @@ tomlkit = ">=0.5.8,<1.0.0"
 
 [[package]]
 name = "pyfony-core"
-version = "0.8.3"
+version = "0.8.4"
 description = "Pyfony core"
 category = "main"
 optional = false
@@ -2251,7 +2251,7 @@ pyfony-bundles = [
     {file = "pyfony_bundles-0.4.4-py3-none-any.whl", hash = "sha256:1267fa2c6d12b50bdffe86cd0536154218ee86a099c56048b34c8368822097fc"},
 ]
 pyfony-core = [
-    {file = "pyfony_core-0.8.3-py3-none-any.whl", hash = "sha256:9e4e57983b55106abc2e5003620202b257ab6714b1a20e65e8759e203be51eb3"},
+    {file = "pyfony_core-0.8.4-py3-none-any.whl", hash = "sha256:ee9d6c6ea852d8135a2ddd50359d3b768634915ff6011a16d3054f28ee002efc"},
 ]
 pyfony-sqlalchemy-bundle = [
     {file = "pyfony_sqlalchemy_bundle-1.0.1-py3-none-any.whl", hash = "sha256:58d9557d4944aa9e8972bd02efa57be6cd2b7be5d13f4dcb66365fa0e3a828a8"},
