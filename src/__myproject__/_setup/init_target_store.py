@@ -35,7 +35,7 @@ entity = dp.fs.get_entity()
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC --create database if not exists dev_feature_store
+# MAGIC --create database if not exists dev_odap_feature_store
 
 # COMMAND ----------
 

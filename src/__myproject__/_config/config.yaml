@@ -12,12 +12,12 @@ parameters:
       port:
 
   featurestorebundle:
-    db_path: '%kernel.environment%_odap_feature_store'
+    db_name: '%kernel.environment%_odap_feature_store'
     base_path: 'dbfs:/path/to/feature_store'
     entities:
-      #test:
-      #  id_column: "id"
-      #  id_column_type: "string"
+    #  test:
+    #    id_column: "id"
+    #    id_column_type: "string"
     feature:
       backend: 'delta_table'
     metadata:
