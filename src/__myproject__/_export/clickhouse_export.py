@@ -98,7 +98,7 @@ def write_features(df: DataFrame, table_names: dict, secrets: dict, clickhouse_h
     (df.write
         .format("jdbc")
         .option("createTableOptions", "ENGINE = SummingMergeTree() ORDER BY client_id")
-        .option("driver", "ru.yandex.clickhouse.ClickHouseDriver")
+        .option("driver", "com.clickhouse.jdbc.ClickHouseDriver")
         .option("url", f"jdbc:clickhouse://{clickhouse_host}:{clickhouse_port}")
         .option("dbtable", table_names["temp"])
         .option("user", secrets["user"])
