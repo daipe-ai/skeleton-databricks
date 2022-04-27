@@ -3,14 +3,28 @@
 
 # COMMAND ----------
 
+# MAGIC %md ### Imports
+
+# COMMAND ----------
+
 import os
 import requests
 import json
+import daipe as dp
+import numpy as np
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as f
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 from pyspark.dbutils import DBUtils
 from logging import Logger
-import daipe as dp
+
+# COMMAND ----------
+
+# MAGIC %md ### Get parameters
+
+# COMMAND ----------
+
+entity = dp.fs.get_entity()
 
 # COMMAND ----------
 
@@ -28,16 +42,16 @@ def load_config(config_url: str, logger: Logger, spark: SparkSession):
 
 # COMMAND ----------
 
-entity = dp.fs.get_entity()
-
-# COMMAND ----------
-
 @dp.notebook_function(os.environ["APP_ENV"])
 def get_table_names(current_env: str):
     return {
-        "main": f"featurestore_{current_env}",
-        "temp": f"featurestore_{current_env}_temp",
-        "backup": f"featurestore_{current_env}_backup",
+        "features_main": f"featurestore_{current_env}",
+        "features_temp": f"featurestore_{current_env}_temp",
+        "features_backup": f"featurestore_{current_env}_backup",
+        "sampled_main": f"sampled_featurestore_{current_env}",
+        "sampled_temp": f"sampled_featurestore_{current_env}_temp",
+        "sampled_backup": f"sampled_featurestore_{current_env}_backup",
+        "bins": f"bins_{current_env}",
     }
 
 # COMMAND ----------
@@ -60,6 +74,10 @@ def get_clickhouse_address(host: str, port: int):
 
 # COMMAND ----------
 
+# MAGIC %md ### Methods to access Clickhouse
+
+# COMMAND ----------
+
 def execute_clickhouse_query(query: str):
     response = requests.post(
         f"http://{get_clickhouse_address.result['host']}:{get_clickhouse_address.result['port']}/",
@@ -69,11 +87,55 @@ def execute_clickhouse_query(query: str):
 
 # COMMAND ----------
 
+def upload_table_to_clickhouse(df: DataFrame, table_name: str, engine_type: str):
+    """
+    Uploads a dataframe to Clickhouse database configured for this project.
+    df: Dataframe to upload
+    table_name: Name of the destination table
+    engine_type: Type of engine for the table. One of: summing_merge_tree, aggregating_merge_tree, log
+    """
+    
+    engine_map = {
+        "summing_merge_tree": f"ENGINE = SummingMergeTree() ORDER BY {entity.id_column}",
+        "aggregating_merge_tree": f"ENGINE = AggregatingMergeTree() ORDER BY {entity.id_column}",
+        "log": "ENGINE = Log",
+    }
+    (df.write
+        .format("jdbc")
+        .option("createTableOptions", engine_map[engine_type])
+        .option("driver", "com.clickhouse.jdbc.ClickHouseDriver")
+        .option("url", f"jdbc:clickhouse://{get_clickhouse_address.result['host']}:{get_clickhouse_address.result['port']}")
+        .option("dbtable", table_name)
+        .option("user", get_secrets.result["user"])
+        .option("password", get_secrets.result["pass"])
+        .mode('Overwrite')
+        .save())
+
+# COMMAND ----------
+
+def move_temp_table_to_main_and_backup(temp_table_name: str, main_table_name: str, backup_table_name: str):
+    execute_clickhouse_query(f"DROP TABLE IF EXISTS {backup_table_name}")
+
+    if execute_clickhouse_query(f"EXISTS {main_table_name}")[0]["result"]:
+        execute_clickhouse_query(f"RENAME TABLE {main_table_name} TO {backup_table_name}")
+
+    execute_clickhouse_query(f"RENAME TABLE {temp_table_name} TO {main_table_name}")
+
+# COMMAND ----------
+
+# MAGIC %md ### Check ongoing export
+
+# COMMAND ----------
+
 @dp.notebook_function(get_table_names)
 def check_ongoing_export(table_names: dict, dbutils: DBUtils, logger: Logger):
-    if execute_clickhouse_query(f"EXISTS {table_names['temp']}")[0]["result"]:
+    if execute_clickhouse_query(f"EXISTS {table_names['features_temp']}")[0]["result"]:
         logger.error("Clickhouse export is already ongoing in this environment.")
         dbutils.notebook.exit(0)
+
+# COMMAND ----------
+
+# MAGIC %md ### Create tables
 
 # COMMAND ----------
 
@@ -92,40 +154,88 @@ def features_to_export_with_conversions(df: DataFrame):
 
 # COMMAND ----------
 
-@dp.transformation(features_to_export_with_conversions, get_table_names, get_secrets, "%daipeproject.clickhouse.host%", "%daipeproject.clickhouse.port%")
-def write_features(df: DataFrame, table_names: dict, secrets: dict, clickhouse_host: str, clickhouse_port: int, logger: Logger):
-    logger.info(f"Writing features to ClickHouse database at {clickhouse_host}:{clickhouse_port}")
-    (df.write
-        .format("jdbc")
-        .option("createTableOptions", "ENGINE = SummingMergeTree() ORDER BY client_id")
-        .option("driver", "com.clickhouse.jdbc.ClickHouseDriver")
-        .option("url", f"jdbc:clickhouse://{clickhouse_host}:{clickhouse_port}")
-        .option("dbtable", table_names["temp"])
-        .option("user", secrets["user"])
-        .option("password", secrets["pass"])
-        .mode('Overwrite')
-        .save())
+@dp.transformation(features_to_export_with_conversions, display=False)
+def sampled_features(df: DataFrame):
+    return df.sample(0.01)
+
+# COMMAND ----------
+
+@dp.transformation(features_to_export_with_conversions, get_secrets, display=False)
+def generate_bins(df: DataFrame, secrets: dict):
+    numerical = [column for column, type in df.dtypes if type in ("float", "int", "double", "bigint")]
+    bins_columns = []
+    bins_data = []
+
+    for col in numerical:
+        bins_columns.append(StructField(col, StringType(), True))
+
+        d = df.filter(f.col(col) > 0).select(f.percentile_approx(col, 0.963), f.max(col))
+
+        quantile = d.collect()[0][0] or 0.01
+        maximum  = d.collect()[0][1] or 1
+
+        bins = np.arange(0, quantile * 1.1, quantile / 9)
+        bins[-1] = maximum
+        if bins[0] != 0:
+            bins.insert(0, 0)
+
+        bins_data.append("-".join(np.around(bins, 3).astype(str)))
+
+    return spark.createDataFrame(data=[bins_data], schema=StructType(bins_columns))
+
+# COMMAND ----------
+
+# MAGIC %md ### Write tables
+
+# COMMAND ----------
+
+@dp.notebook_function(features_to_export_with_conversions, get_table_names)
+def write_features(df: DataFrame, table_names: dict, logger: Logger):
+    logger.info(f"Writing features to ClickHouse database.")
+    upload_table_to_clickhouse(df, table_names["features_temp"], "aggregating_merge_tree")
+
+# COMMAND ----------
+
+@dp.notebook_function(sampled_features, get_table_names)
+def write_sampled_features(df: DataFrame, table_names: dict, logger: Logger):
+    logger.info(f"Writing sampled features to ClickHouse database.")
+    upload_table_to_clickhouse(df, table_names["sampled_temp"], "aggregating_merge_tree")
+
+# COMMAND ----------
+
+@dp.notebook_function(generate_bins, get_table_names)
+def write_bins(df: DataFrame, table_names: dict, logger: Logger):
+    logger.info(f"Writing feature bins to ClickHouse database.")
+    upload_table_to_clickhouse(df, table_names["bins"], "log")
 
 # COMMAND ----------
 
 @dp.notebook_function(get_table_names)
 def rename_tables(table_names: dict, logger: Logger):
-    execute_clickhouse_query(f"DROP TABLE IF EXISTS {table_names['backup']}")
+    move_temp_table_to_main_and_backup(
+        table_names['features_temp'],
+        table_names['features_main'],
+        table_names['features_backup'],
+    )
+    logger.info(f"Features export successful, table saved as {table_names['features_main']}, backup saved as {table_names['features_backup']}.")
 
-    if execute_clickhouse_query(f"EXISTS {table_names['main']}")[0]["result"]:
-        execute_clickhouse_query(f"RENAME TABLE {table_names['main']} TO {table_names['backup']}")
-        logger.info(f"Table {table_names['backup']} updated with data from {table_names['main']}.")
+    move_temp_table_to_main_and_backup(
+        table_names['sampled_temp'],
+        table_names['sampled_main'],
+        table_names['sampled_backup'],
+    )
+    logger.info(f"Sampled features export successful, table saved as {table_names['sampled_main']}, backup saved as {table_names['sampled_backup']}.")
 
-    execute_clickhouse_query(f"RENAME TABLE {table_names['temp']} TO {table_names['main']}")
+# COMMAND ----------
 
-    logger.info(f"Export successful, table saved as {table_names['main']}.")
+# MAGIC %md ### Checks
 
 # COMMAND ----------
 
 @dp.notebook_function(features_to_export_with_conversions, get_table_names)
 def compare_counts(df: DataFrame, table_names: dict, logger: Logger):
     fs_count = df.count()
-    clickhouse_count = int(execute_clickhouse_query(f"SELECT COUNT(*) from {table_names['main']}")[0]["count()"])
+    clickhouse_count = int(execute_clickhouse_query(f"SELECT COUNT(*) from {table_names['features_main']}")[0]["count()"])
     if fs_count == clickhouse_count:
         logger.info(f"Featurestore row count equals to Clickhouse export row count ({fs_count})")
     else:
