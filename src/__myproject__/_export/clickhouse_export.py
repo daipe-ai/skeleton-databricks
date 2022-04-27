@@ -14,7 +14,7 @@ import daipe as dp
 import numpy as np
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as f
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType
+from pyspark.sql.types import StructType, StructField, StringType
 from pyspark.dbutils import DBUtils
 from logging import Logger
 
@@ -94,7 +94,7 @@ def upload_table_to_clickhouse(df: DataFrame, table_name: str, engine_type: str)
     table_name: Name of the destination table
     engine_type: Type of engine for the table. One of: summing_merge_tree, aggregating_merge_tree, log
     """
-    
+
     engine_map = {
         "summing_merge_tree": f"ENGINE = SummingMergeTree() ORDER BY {entity.id_column}",
         "aggregating_merge_tree": f"ENGINE = AggregatingMergeTree() ORDER BY {entity.id_column}",
@@ -160,8 +160,8 @@ def sampled_features(df: DataFrame):
 
 # COMMAND ----------
 
-@dp.transformation(features_to_export_with_conversions, get_secrets, display=False)
-def generate_bins(df: DataFrame, secrets: dict):
+@dp.transformation(features_to_export_with_conversions, display=False)
+def generate_bins(df: DataFrame, spark: SparkSession):
     numerical = [column for column, type in df.dtypes if type in ("float", "int", "double", "bigint")]
     bins_columns = []
     bins_data = []
@@ -169,10 +169,10 @@ def generate_bins(df: DataFrame, secrets: dict):
     for col in numerical:
         bins_columns.append(StructField(col, StringType(), True))
 
-        d = df.filter(f.col(col) > 0).select(f.percentile_approx(col, 0.963), f.max(col))
+        filtered_df = df.filter(f.col(col) > 0).select(f.percentile_approx(col, 0.963), f.max(col))
 
-        quantile = d.collect()[0][0] or 0.01
-        maximum  = d.collect()[0][1] or 1
+        quantile = filtered_df.collect()[0][0] or 0.01
+        maximum  = filtered_df.collect()[0][1] or 1
 
         bins = np.arange(0, quantile * 1.1, quantile / 9)
         bins[-1] = maximum
@@ -191,21 +191,21 @@ def generate_bins(df: DataFrame, secrets: dict):
 
 @dp.notebook_function(features_to_export_with_conversions, get_table_names)
 def write_features(df: DataFrame, table_names: dict, logger: Logger):
-    logger.info(f"Writing features to ClickHouse database.")
+    logger.info("Writing features to ClickHouse database.")
     upload_table_to_clickhouse(df, table_names["features_temp"], "aggregating_merge_tree")
 
 # COMMAND ----------
 
 @dp.notebook_function(sampled_features, get_table_names)
 def write_sampled_features(df: DataFrame, table_names: dict, logger: Logger):
-    logger.info(f"Writing sampled features to ClickHouse database.")
+    logger.info("Writing sampled features to ClickHouse database.")
     upload_table_to_clickhouse(df, table_names["sampled_temp"], "aggregating_merge_tree")
 
 # COMMAND ----------
 
 @dp.notebook_function(generate_bins, get_table_names)
 def write_bins(df: DataFrame, table_names: dict, logger: Logger):
-    logger.info(f"Writing feature bins to ClickHouse database.")
+    logger.info("Writing feature bins to ClickHouse database.")
     upload_table_to_clickhouse(df, table_names["bins"], "log")
 
 # COMMAND ----------
