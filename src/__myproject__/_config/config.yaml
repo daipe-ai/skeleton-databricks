@@ -6,10 +6,15 @@ parameters:
   daipeproject:
     datalake:
       base_path: '/%kernel.environment%'
-
-    clickhouse:
-      host:
-      port:
+    
+    export:
+      clickhouse:
+        host:
+        port:
+      bins:
+        percentile_percentage:
+        bin_count:
+        round_scale:
 
   featurestorebundle:
     db_name: '%kernel.environment%_odap_feature_store'
