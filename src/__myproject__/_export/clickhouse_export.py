@@ -14,6 +14,7 @@ import daipe as dp
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as f
 from pyspark.dbutils import DBUtils
+from box import Box
 from logging import Logger
 
 # COMMAND ----------
@@ -63,12 +64,17 @@ def get_secrets(dbutils: DBUtils):
 
 # COMMAND ----------
 
-@dp.notebook_function("%daipeproject.clickhouse.host%", "%daipeproject.clickhouse.port%")
-def get_clickhouse_address(host: str, port: int):
-    return {
-        "host": host,
-        "port": port,
-    }
+@dp.notebook_function("%daipeproject.export.clickhouse%")
+def get_clickhouse_address(clickhouse: Box):
+    return clickhouse
+
+# COMMAND ----------
+
+@dp.notebook_function(
+    "%daipeproject.export.bins%"
+)
+def get_bins_params(bins_config: Box):
+    return bins_config
 
 # COMMAND ----------
 
@@ -78,7 +84,7 @@ def get_clickhouse_address(host: str, port: int):
 
 def execute_clickhouse_query(query: str):
     response = requests.post(
-        f"http://{get_clickhouse_address.result['host']}:{get_clickhouse_address.result['port']}/",
+        f"http://{get_clickhouse_address.result.host}:{get_clickhouse_address.result.port}/",
         params={"user": get_secrets.result["user"], "password": get_secrets.result["pass"], "default_format": "JSON"},
         data=query)
     return json.loads(response.content.decode("utf8") or "{}").get("data")
@@ -102,7 +108,7 @@ def upload_table_to_clickhouse(df: DataFrame, table_name: str, engine_type: str)
         .format("jdbc")
         .option("createTableOptions", engine_map[engine_type])
         .option("driver", "com.clickhouse.jdbc.ClickHouseDriver")
-        .option("url", f"jdbc:clickhouse://{get_clickhouse_address.result['host']}:{get_clickhouse_address.result['port']}")
+        .option("url", f"jdbc:clickhouse://{get_clickhouse_address.result.host}:{get_clickhouse_address.result.port}")
         .option("dbtable", table_name)
         .option("user", get_secrets.result["user"])
         .option("password", get_secrets.result["pass"])
@@ -159,10 +165,17 @@ def sampled_features(df: DataFrame):
 # COMMAND ----------
 
 def count_percentile(col):
-    return f.percentile_approx(f.when(f.col(col) > 0, f.col(col)), 0.963)
+    return f.percentile_approx(f.when(f.col(col) > 0, f.col(col)), get_bins_params.result.percentile_percentage)
 
 def make_bin_string(col):
-    return f.concat_ws("-", f.array(*(f.round(i * f.col(f"{col}_quantile") / 9, 3) for i in range(9)), f.col(f"{col}_max")))
+    return f.concat_ws(
+        "-",
+        f.array(
+            *(
+                f.round(i * f.col(f"{col}_quantile") / get_bins_params.result.bin_count - 1, get_bins_params.result.round_scale)
+                for i in range(get_bins_params.result.bin_count - 1)),
+            f.col(f"{col}_max"))
+        )
 
 # COMMAND ----------
 
