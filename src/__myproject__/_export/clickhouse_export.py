@@ -11,7 +11,7 @@ import os
 import requests
 import json
 import daipe as dp
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame, SparkSession, Column
 from pyspark.sql import functions as f
 from pyspark.dbutils import DBUtils
 from box import Box
@@ -164,18 +164,20 @@ def sampled_features(df: DataFrame):
 
 # COMMAND ----------
 
-def count_percentile(col):
+def count_percentile(col: Column):
     return f.percentile_approx(f.when(f.col(col) > 0, f.col(col)), get_bins_params.result.percentile_percentage)
 
-def make_bin_string(col):
-    return f.concat_ws(
-        "-",
-        f.array(
-            *(
-                f.round(i * f.col(f"{col}_quantile") / get_bins_params.result.bin_count - 1, get_bins_params.result.round_scale)
-                for i in range(get_bins_params.result.bin_count - 1)),
-            f.col(f"{col}_max"))
-        )
+def round_bin(col: Column, current_bin: int, bin_count: int):
+    return f.round(current_bin * f.col(f"{col}_quantile") / bin_count - 1, get_bins_params.result.round_scale)
+
+def make_bin_array(col: Column):
+    return f.array(
+        *(round_bin(col, i, get_bins_params.result.bin_count - 1) for i in range(get_bins_params.result.bin_count - 1)),
+        f.col(f"{col}_max")
+    )
+
+def make_bin_string(col: Column):
+    return f.concat_ws("-", make_bin_array(col))
 
 # COMMAND ----------
 
