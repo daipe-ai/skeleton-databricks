@@ -70,14 +70,6 @@ def get_clickhouse_address(clickhouse: Box):
 
 # COMMAND ----------
 
-@dp.notebook_function(
-    "%daipeproject.export.bins%"
-)
-def get_bins_params(bins_config: Box):
-    return bins_config
-
-# COMMAND ----------
-
 # MAGIC %md ### Methods to access Clickhouse
 
 # COMMAND ----------
@@ -164,34 +156,38 @@ def sampled_features(df: DataFrame):
 
 # COMMAND ----------
 
-def count_percentile(col: str) -> Column:
-    return f.percentile_approx(f.when(f.col(col) > 0, f.col(col)), get_bins_params.result.percentile_percentage)
+def count_percentile(col: str, percentile_percentage: float) -> Column:
+    return f.percentile_approx(f.when(f.col(col) > 0, f.col(col)), percentile_percentage)
 
 def round_bin(col: str, current_bin: int, bin_count: int, round_scale: int) -> Column:
     return f.round(current_bin * f.col(f"{col}_quantile") / bin_count - 1, round_scale)
 
-def make_bin_array(col: str) -> Column:
+def make_bin_array(col: str, bin_count: int, round_scale: int) -> Column:
     return f.array(
-        *(
-            round_bin(col, i, get_bins_params.result.bin_count - 1, get_bins_params.result.round_scale)
-            for i in range(get_bins_params.result.bin_count - 1)),
+        *(round_bin(col, i, bin_count - 1, round_scale) for i in range(bin_count - 1)),
         f.col(f"{col}_max")
     )
 
-def make_bin_string(col: str) -> Column:
-    return f.concat_ws("-", make_bin_array(col))
+def make_bin_string(col: str, bin_count: int, round_scale: int) -> Column:
+    return f.concat_ws("-", make_bin_array(col, bin_count, round_scale))
 
 # COMMAND ----------
 
-@dp.transformation(features_to_export_with_conversions, display=False)
-def generate_bins(df: DataFrame):
+@dp.transformation(
+    features_to_export_with_conversions,
+    "%daipeproject.bins.percentile_percentage%",
+    "%daipeproject.bins.bin_count%",
+    "%daipeproject.bins.round_scale%",
+    display=False
+)
+def generate_bins(df: DataFrame, percentile_percentage: float, bin_count: int, round_scale: int):
     numerical_columns = [column for column, dtype in df.dtypes if dtype in ("float", "int", "double", "bigint")]
 
     return df.select(
-        *(count_percentile(col).alias(f"{col}_quantile") for col in numerical_columns),
+        *(count_percentile(col, percentile_percentage).alias(f"{col}_quantile") for col in numerical_columns),
         *(f.max(col).alias(f"{col}_max") for col in numerical_columns)
     ).select(
-        *(make_bin_string(col).alias(col) for col in numerical_columns)
+        *(make_bin_string(col, bin_count, round_scale).alias(col) for col in numerical_columns)
     )
 
 # COMMAND ----------
