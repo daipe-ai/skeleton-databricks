@@ -11,10 +11,8 @@ import os
 import requests
 import json
 import daipe as dp
-import numpy as np
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as f
-from pyspark.sql.types import StructType, StructField, StringType
 from pyspark.dbutils import DBUtils
 from logging import Logger
 
@@ -171,7 +169,7 @@ def make_bin_string(col):
 @dp.transformation(features_to_export_with_conversions, display=False)
 def generate_bins(df: DataFrame):
     numerical_columns = [column for column, dtype in df.dtypes if dtype in ("float", "int", "double", "bigint")]
-    
+
     return df.select(
         *(count_percentile(col).alias(f"{col}_quantile") for col in numerical_columns),
         *(f.max(col).alias(f"{col}_max") for col in numerical_columns)
