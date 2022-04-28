@@ -175,19 +175,17 @@ def make_bin_string(col: str, bin_count: int, round_scale: int) -> Column:
 
 @dp.transformation(
     features_to_export_with_conversions,
-    "%daipeproject.bins.percentile_percentage%",
-    "%daipeproject.bins.bin_count%",
-    "%daipeproject.bins.round_scale%",
+    "%daipeproject.export.bins%",
     display=False
 )
-def generate_bins(df: DataFrame, percentile_percentage: float, bin_count: int, round_scale: int):
+def generate_bins(df: DataFrame, bin_params: Box):
     numerical_columns = [column for column, dtype in df.dtypes if dtype in ("float", "int", "double", "bigint")]
 
     return df.select(
-        *(count_percentile(col, percentile_percentage).alias(f"{col}_quantile") for col in numerical_columns),
+        *(count_percentile(col, bin_params.percentile_percentage).alias(f"{col}_quantile") for col in numerical_columns),
         *(f.max(col).alias(f"{col}_max") for col in numerical_columns)
     ).select(
-        *(make_bin_string(col, bin_count, round_scale).alias(col) for col in numerical_columns)
+        *(make_bin_string(col, bin_params.bin_count, bin_params.round_scale).alias(col) for col in numerical_columns)
     )
 
 # COMMAND ----------
