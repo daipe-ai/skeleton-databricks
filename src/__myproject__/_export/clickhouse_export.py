@@ -164,19 +164,21 @@ def sampled_features(df: DataFrame):
 
 # COMMAND ----------
 
-def count_percentile(col: Column):
+def count_percentile(col: str) -> Column:
     return f.percentile_approx(f.when(f.col(col) > 0, f.col(col)), get_bins_params.result.percentile_percentage)
 
-def round_bin(col: Column, current_bin: int, bin_count: int):
-    return f.round(current_bin * f.col(f"{col}_quantile") / bin_count - 1, get_bins_params.result.round_scale)
+def round_bin(col: str, current_bin: int, bin_count: int, round_scale: int) -> Column:
+    return f.round(current_bin * f.col(f"{col}_quantile") / bin_count - 1, round_scale)
 
-def make_bin_array(col: Column):
+def make_bin_array(col: str) -> Column:
     return f.array(
-        *(round_bin(col, i, get_bins_params.result.bin_count - 1) for i in range(get_bins_params.result.bin_count - 1)),
+        *(
+            round_bin(col, i, get_bins_params.result.bin_count - 1, get_bins_params.result.round_scale)
+            for i in range(get_bins_params.result.bin_count - 1)),
         f.col(f"{col}_max")
     )
 
-def make_bin_string(col: Column):
+def make_bin_string(col: str) -> Column:
     return f.concat_ws("-", make_bin_array(col))
 
 # COMMAND ----------
