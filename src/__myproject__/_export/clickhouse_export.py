@@ -160,28 +160,24 @@ def sampled_features(df: DataFrame):
 
 # COMMAND ----------
 
+def count_percentile(col):
+    return f.percentile_approx(f.when(f.col(col) > 0, f.col(col)), 0.963)
+
+def make_bin_string(col):
+    return f.concat_ws("-", f.array(*(f.round(i * f.col(f"{col}_quantile") / 9, 3) for i in range(9)), f.col(f"{col}_max")))
+
+# COMMAND ----------
+
 @dp.transformation(features_to_export_with_conversions, display=False)
-def generate_bins(df: DataFrame, spark: SparkSession):
-    numerical = [column for column, type in df.dtypes if type in ("float", "int", "double", "bigint")]
-    bins_columns = []
-    bins_data = []
-
-    for col in numerical:
-        bins_columns.append(StructField(col, StringType(), True))
-
-        filtered_df = df.filter(f.col(col) > 0).select(f.percentile_approx(col, 0.963), f.max(col))
-
-        quantile = filtered_df.collect()[0][0] or 0.01
-        maximum  = filtered_df.collect()[0][1] or 1
-
-        bins = np.arange(0, quantile * 1.1, quantile / 9)
-        bins[-1] = maximum
-        if bins[0] != 0:
-            bins.insert(0, 0)
-
-        bins_data.append("-".join(np.around(bins, 3).astype(str)))
-
-    return spark.createDataFrame(data=[bins_data], schema=StructType(bins_columns))
+def generate_bins(df: DataFrame):
+    numerical_columns = [column for column, dtype in df.dtypes if dtype in ("float", "int", "double", "bigint")]
+    
+    return df.select(
+        *(count_percentile(col).alias(f"{col}_quantile") for col in numerical_columns),
+        *(f.max(col).alias(f"{col}_max") for col in numerical_columns)
+    ).select(
+        *(make_bin_string(col).alias(col) for col in numerical_columns)
+    )
 
 # COMMAND ----------
 
