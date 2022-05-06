@@ -2,7 +2,7 @@ name: Templates Creator Pipeline
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   create_templates:
@@ -42,7 +42,8 @@ jobs:
         run: |
           rm -rf .git
           git init
+          git branch -m master main
           git add -- . ':!.github/workflows/create_templates.yml' ':!.vscode/' ':!.idea/'
           git commit -m "Initial commit"
           git remote add origin https://${TEMPLATE_CREATOR_USERNAME}:${TEMPLATE_CREATOR_TOKEN}@github.com/daipe-ai/daipe-template-feature-store.git
-          git push origin master --force
+          git push origin main --force
