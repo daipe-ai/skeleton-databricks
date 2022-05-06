@@ -233,27 +233,6 @@ six = ">=1.10.0"
 tabulate = ">=0.7.7"
 
 [[package]]
-name = "databricks-connect"
-version = "9.1.2"
-description = "Databricks Connect Client"
-category = "dev"
-optional = false
-python-versions = ">=3.6"
-
-[package.dependencies]
-py4j = "0.10.9"
-six = "*"
-
-[package.extras]
-ml = ["numpy (>=1.7)"]
-mllib = ["numpy (>=1.7)"]
-sql = ["pandas (>=0.23.2)", "pyarrow (>=1.0.0)"]
-
-[package.source]
-type = "url"
-url = "https://daipe-packages.s3.eu-central-1.amazonaws.com/databricks-connect-9.1.2.tar.gz"
-
-[[package]]
 name = "datalake-bundle"
 version = "1.2.2"
 description = "DataLake tables management bundle for the Daipe Framework"
@@ -333,6 +312,21 @@ category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
+[[package]]
+name = "delta-spark"
+version = "1.1.0"
+description = "Python APIs for using Delta Lake with Apache Spark"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+importlib-metadata = ">=1.0.0"
+pyspark = ">=3.2.0,<3.3.0"
+
+[package.source]
+type = "url"
+url = "https://daipe-packages.s3.eu-central-1.amazonaws.com/delta_spark-1.1.0-py3-none-any.whl"
 [[package]]
 name = "distlib"
 version = "0.3.2"
@@ -980,7 +974,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "py4j"
-version = "0.10.9"
+version = "0.10.9.2"
 description = "Enables Python programs to dynamically access arbitrary Java objects"
 category = "dev"
 optional = false
@@ -1097,6 +1091,26 @@ category = "dev"
 optional = false
 python-versions = ">=3.6"
 
+[[package]]
+name = "pyspark"
+version = "3.2.0"
+description = "Apache Spark Python API"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+py4j = "0.10.9.2"
+
+[package.extras]
+ml = ["numpy (>=1.7)"]
+mllib = ["numpy (>=1.7)"]
+pandas_on_spark = ["pandas (>=0.23.2)", "pyarrow (>=1.0.0)", "numpy (>=1.14)"]
+sql = ["pandas (>=0.23.2)", "pyarrow (>=1.0.0)"]
+
+[package.source]
+type = "url"
+url = "https://daipe-packages.s3.eu-central-1.amazonaws.com/pyspark-3.2.0-py2.py3-none-any.whl"
 [[package]]
 name = "pyspark-bundle"
 version = "1.2.0"
@@ -1515,7 +1529,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.10"
-content-hash = "d4252326b7322cd0677a574732a910f024cb38eddf21f86f257b1c372ce2ac79"
+content-hash = "b273b37816ffa7afef36efc8c882bacd9b99dc3114dc05b448568c28051cacab"
 
 [metadata.files]
 appdirs = [
@@ -1685,7 +1699,6 @@ databricks-cli = [
     {file = "databricks-cli-0.16.2.tar.gz", hash = "sha256:3e9a65a19a589b795ebbd9b3b16a8e470d612d57d6216ae44a9c7a735e4080e6"},
     {file = "databricks_cli-0.16.2-py2-none-any.whl", hash = "sha256:74c35b38fe686881af4b4797c4f3ab2e1c9e9ff4986f470486f152fb45d19b24"},
 ]
-databricks-connect = []
 datalake-bundle = [
     {file = "datalake_bundle-1.2.2-py3-none-any.whl", hash = "sha256:0da33499bfc095fa91a1331f38299bf628e63d5cc13272f6f0a52f5dc16e34dc"},
 ]
@@ -1708,6 +1721,7 @@ defusedxml = [
     {file = "defusedxml-0.7.1-py2.py3-none-any.whl", hash = "sha256:a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61"},
     {file = "defusedxml-0.7.1.tar.gz", hash = "sha256:1bb3032db185915b62d7c6209c5a8792be6a32ab2fedacc84e01b52c51aa3e69"},
 ]
+delta-spark = []
 distlib = [
     {file = "distlib-0.3.2-py2.py3-none-any.whl", hash = "sha256:23e223426b28491b1ced97dc3bbe183027419dfc7982b4fa2f05d5f3ff10711c"},
     {file = "distlib-0.3.2.zip", hash = "sha256:106fef6dc37dd8c0e2c0a60d3fca3e77460a48907f335fa28420463a6f799736"},
@@ -2213,8 +2227,8 @@ py = [
     {file = "py-1.11.0.tar.gz", hash = "sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719"},
 ]
 py4j = [
-    {file = "py4j-0.10.9-py2.py3-none-any.whl", hash = "sha256:859ba728a7bb43e9c2bf058832759fb97a598bb28cc12f34f5fc4abdec08ede6"},
-    {file = "py4j-0.10.9.tar.gz", hash = "sha256:36ec57f43ff8ced260a18aa9a4e46c3500a730cac8860e259cbaa546c2b9db2f"},
+    {file = "py4j-0.10.9.2-py2.py3-none-any.whl", hash = "sha256:bf0485388e415ff26710d2dc719cb0ede16cf1164b1ee757e0ebb2e98c471521"},
+    {file = "py4j-0.10.9.2.tar.gz", hash = "sha256:624f97c363b8dd84822bc666b12fa7f7d97824632b2ff3d852cc491359ce7615"},
 ]
 pyarrow = [
     {file = "pyarrow-4.0.0-cp36-cp36m-macosx_10_13_x86_64.whl", hash = "sha256:239606b385e3cd1d5dab598ccef8105fc258dbad1cf0c44295f8c1ca754ac62c"},
@@ -2312,6 +2326,7 @@ pyrsistent = [
     {file = "pyrsistent-0.18.0-cp39-cp39-win_amd64.whl", hash = "sha256:404e1f1d254d314d55adb8d87f4f465c8693d6f902f67eb6ef5b4526dc58e6ea"},
     {file = "pyrsistent-0.18.0.tar.gz", hash = "sha256:773c781216f8c2900b42a7b638d5b517bb134ae1acbebe4d1e8f1f41ea60eb4b"},
 ]
+pyspark = []
 pyspark-bundle = [
     {file = "pyspark_bundle-1.2.0-py3-none-any.whl", hash = "sha256:0daf97a237ad3bf604f62c5bbae46589e4d371ed1a95f28e18c8be62a86a955d"},
 ]
