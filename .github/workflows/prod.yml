@@ -1,7 +1,8 @@
 name: Prod pipeline
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - 'master'
 
 jobs:
   build:
@@ -9,19 +10,24 @@ jobs:
     with:
       pylint_enabled: true
       check_displays: true
+      run_tests: true
+
+  release:
+    needs: build
+    uses: daipe-ai/daipe-project-ci-cd/.github/workflows/release.yml@v1
 
   deploy:
-    needs: build
+    needs: release
     uses: daipe-ai/daipe-project-ci-cd/.github/workflows/run_command.yml@v1
     with:
-      command: daipe dbx:repo:update --env=prod --repo-url=${{ github.server_url }}/${{ github.repository }}.git --repo-url=${{ github.server_url }}/${{ github.repository }}.git --repo-name=${{ github.event.repository.name }} --tag=${{ github.ref_name }} --force
+      command: daipe dbx:repo:update --env=prod --repo-url=${{ github.server_url }}/${{ github.repository }}.git --repo-name=${{ github.event.repository.name }} --branch=main --force
     secrets:
-      DBX_TOKEN: ${{ secrets.DBX_TOKEN }}
+      DBX_TOKEN: ${{ secrets.DBX_TOKEN_PROD }}
 
   deploy_jobs:
-    needs: build
+    needs: release
     uses: daipe-ai/daipe-project-ci-cd/.github/workflows/run_command.yml@v1
     with:
       command: daipe dbx:job:create-all --env=prod --repo_name=${{ github.event.repository.name }}
     secrets:
-      DBX_TOKEN: ${{ secrets.DBX_TOKEN }}
+      DBX_TOKEN: ${{ secrets.DBX_TOKEN_PROD }}

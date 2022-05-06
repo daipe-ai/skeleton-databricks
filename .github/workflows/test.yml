@@ -1,6 +1,8 @@
 name: Test pipeline
 on:
   pull_request:
+    branches:
+      - 'master'
 
 jobs:
   build:
@@ -8,6 +10,7 @@ jobs:
     with:
       pylint_enabled: true
       check_displays: true
+      run_tests: true
 
   deploy:
     needs: build
@@ -15,7 +18,7 @@ jobs:
     with:
       command: daipe dbx:repo:update --env=test --repo-url=${{ github.server_url }}/${{ github.repository }}.git --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --force
     secrets:
-      DBX_TOKEN: ${{ secrets.DBX_TOKEN }}
+      DBX_TOKEN: ${{ secrets.DBX_TOKEN_TEST }}
 
   deploy_jobs:
     needs: build
@@ -23,4 +26,4 @@ jobs:
     with:
       command: daipe dbx:job:create-all --env=test --repo_name=${{ github.event.repository.name }} --branch_name=${{ github.head_ref }}
     secrets:
-      DBX_TOKEN: ${{ secrets.DBX_TOKEN }}
+      DBX_TOKEN: ${{ secrets.DBX_TOKEN_TEST }}

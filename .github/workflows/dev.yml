@@ -1,6 +1,9 @@
 name: Dev pipeline
 on:
   push:
+    branches:
+      - '*'
+      - '!master'
 
 jobs:
   build:
@@ -8,3 +11,4 @@ jobs:
     with:
       pylint_enabled: true
       check_displays: true
+      run_tests: true
