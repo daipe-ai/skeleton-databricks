@@ -24,7 +24,7 @@ if not package:
 
 # COMMAND ----------
 
-# MAGIC %poetry $poetry_action $package
+# MAGIC %poetry update numpy koalas tenacity distlib filelock plotly
 
 # COMMAND ----------
 
