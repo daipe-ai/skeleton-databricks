@@ -4,7 +4,7 @@ imports:
 parameters:
   daipeproject:
     databricks:
-      address: 'https://adb-8328309645514519.19.azuredatabricks.net/'
+      address: 'https://adb-8406481409439422.2.azuredatabricks.net'
       repo:
         base_dir: "/Repos/{repo_name}/{branch_name}"
       job:
