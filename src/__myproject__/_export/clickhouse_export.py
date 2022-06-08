@@ -174,9 +174,11 @@ def round_bin(col: str, current_bin: int, bin_count: int) -> Column:
     return current_bin * f.col(f"{col}_quantile") / (bin_count - 1)
 
 def make_bin_array(col: str, bin_count: int) -> Column:
-    return f.array(
-        *(round_bin(col, i, bin_count - 1) for i in range(bin_count - 1)),
-        f.col(f"{col}_max")
+    return f.array_distinct(
+        f.array(
+            *(round_bin(col, i, bin_count - 1) for i in range(bin_count - 1)),
+            f.col(f"{col}_max")
+        )
     )
 
 def make_bin_string(col: str, bin_count: int) -> Column:
