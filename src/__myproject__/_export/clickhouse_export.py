@@ -170,17 +170,17 @@ def sampled_features(df: DataFrame):
 def count_percentile(col: str, percentile_percentage: float, accuracy: int) -> Column:
     return f.percentile_approx(f.when(f.col(col) > 0, f.col(col)), percentile_percentage, accuracy)
 
-def round_bin(col: str, current_bin: int, bin_count: int, round_scale: int) -> Column:
-    return f.round(current_bin * f.col(f"{col}_quantile") / (bin_count - 1), round_scale)
+def round_bin(col: str, current_bin: int, bin_count: int) -> Column:
+    return current_bin * f.col(f"{col}_quantile") / (bin_count - 1)
 
-def make_bin_array(col: str, bin_count: int, round_scale: int) -> Column:
+def make_bin_array(col: str, bin_count: int) -> Column:
     return f.array(
-        *(round_bin(col, i, bin_count - 1, round_scale) for i in range(bin_count - 1)),
+        *(round_bin(col, i, bin_count - 1) for i in range(bin_count - 1)),
         f.col(f"{col}_max")
     )
 
-def make_bin_string(col: str, bin_count: int, round_scale: int) -> Column:
-    return f.concat_ws("-", make_bin_array(col, bin_count, round_scale))
+def make_bin_string(col: str, bin_count: int) -> Column:
+    return f.concat_ws("-", make_bin_array(col, bin_count))
 
 # COMMAND ----------
 
@@ -193,10 +193,10 @@ def floating_point_number_bins(df: DataFrame, bin_params: Box):
     columns = [column for column, dtype in df.dtypes if dtype in ("float", "double")]
 
     return df.select(
-        *(count_percentile(col, bin_params.lower_percentile_percentage, bin_params.accuracy).alias(f"{col}_quantile") for col in columns),
+        *(count_percentile(col, bin_params.higher_percentile_percentage, bin_params.accuracy).alias(f"{col}_quantile") for col in columns),
         *(f.max(col).alias(f"{col}_max") for col in columns)
      ).select(
-        *(make_bin_string(col, bin_params.bin_count, bin_params.round_scale).alias(col) for col in columns)
+        *(make_bin_string(col, bin_params.bin_count).alias(col) for col in columns)
     )
 
 # COMMAND ----------

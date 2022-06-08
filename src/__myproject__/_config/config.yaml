@@ -16,7 +16,6 @@ parameters:
         lower_percentile_percentage: 0.05
         higher_percentile_percentage: 0.95
         bin_count: 8
-        round_scale: 2
         accuracy: 100
 
   featurestorebundle:
