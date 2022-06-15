@@ -327,16 +327,6 @@ def rename_tables(table_names: dict, logger: Logger):
 
 # COMMAND ----------
 
-# MAGIC %md ### Clean Checkpoint Dir
-
-# COMMAND ----------
-
-@dp.notebook_function()
-def clean_checkpoint_dir(spark: SparkSession, dbutils: DBUtils):
-    dbutils.fs.rm(spark.sparkContext.getCheckpointDir(), recurse=True)
-
-# COMMAND ----------
-
 # MAGIC %md ### Checks
 
 # COMMAND ----------
@@ -349,3 +339,11 @@ def compare_counts(df: DataFrame, table_names: dict, logger: Logger):
         logger.info(f"Featurestore row count equals to Clickhouse export row count ({fs_count})")
     else:
         raise Exception(f"Featurestore row count is not equal to export row count. Featurestore: {fs_count} | Clickhouse: {clickhouse_count}")
+
+# MAGIC %md ### Clean Checkpoint Dir
+
+# COMMAND ----------
+
+@dp.notebook_function()
+def clean_checkpoint_dir(spark: SparkSession, dbutils: DBUtils):
+    dbutils.fs.rm(spark.sparkContext.getCheckpointDir(), recurse=True)
