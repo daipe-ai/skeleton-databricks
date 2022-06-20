@@ -8,7 +8,7 @@ parameters:
       repo:
         base_dir: "/Repos/{repo_name}/latest_tag"
       job:
-        suffix: "{repo_name}"x
+        suffix: "{repo_name}"
 
   datalakebundle:
     notebook:
