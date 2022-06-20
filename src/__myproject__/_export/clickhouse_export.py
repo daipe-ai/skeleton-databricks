@@ -244,7 +244,7 @@ def generate_linear_bins_if_bin_count_exceeds_threshold(col: str, bin_count: int
     display=False
 )
 def integral_number_bins(df: DataFrame, bin_params: Box):
-    columns = [column for column, dtype in df.dtypes if dtype in ("int", "bigint")]
+    columns = [column for column, dtype in df.dtypes if dtype in ("boolean", "tinyint", "smallint", "int", "bigint")]
     low_quantiles = get_low_quantiles(df, columns, bin_params.lower_percentile_percentage, bin_params.accuracy)
     high_quantiles = get_high_quantiles(df, columns, bin_params.higher_percentile_percentage, bin_params.accuracy, low_quantiles)
 
