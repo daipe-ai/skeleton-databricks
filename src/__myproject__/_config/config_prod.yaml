@@ -4,11 +4,11 @@ imports:
 parameters:
   daipeproject:
     databricks:
-      address: 'https://adb-8406481409439422.2.azuredatabricks.net'
+      address: 'https://adb-3461535502276712.12.azuredatabricks.net'
       repo:
         base_dir: "/Repos/{repo_name}/latest_tag"
       job:
-        suffix: "{repo_name}"
+        suffix: "{repo_name}"x
 
   datalakebundle:
     notebook:
