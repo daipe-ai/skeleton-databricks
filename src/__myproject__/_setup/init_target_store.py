@@ -30,12 +30,12 @@ entity = dp.fs.get_entity()
 # MAGIC %md
 # MAGIC ## Create a database set up in config.yaml under `featurestorebundle.db_name`
 # MAGIC 
-# MAGIC **TO DO:** change `dev_feature_store` to your config value
+# MAGIC **Optional TO DO:** change `dev_odap_feature_store` to your config value
 
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC --create database if not exists dev_odap_feature_store
+# MAGIC create database if not exists dev_odap_feature_store
 
 # COMMAND ----------
 
@@ -90,7 +90,6 @@ def init_targets_enum_table(target_config, db_name, logger: Logger, table_names:
     targets_enum_path = table_names.get_targets_enum_path()
     targets_enum_table = table_names.get_targets_enum_table_name()
     logger.info("target store enum schema: " + str(targets_enum_table_schema))
-    spark.createDataFrame([], schema=targets_enum_table_schema).write.format("delta").save(targets_enum_path)
 
     write = spark.createDataFrame([], schema=targets_enum_table_schema).write.option("path", targets_enum_path).format("delta")
 

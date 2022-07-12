@@ -42,7 +42,6 @@ def init_widgets(widgets_factory: dp.fs.WidgetsFactory):
 
 # MAGIC %md
 # MAGIC #### 4. Get entity and feature decorator
-# MAGIC Minimum imports, feel free to import other modules here
 
 # COMMAND ----------
 
@@ -52,7 +51,7 @@ feature = dp.fs.feature_decorator_factory.create(entity)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### 4. Load data
+# MAGIC #### 5. Load data
 # MAGIC ##### TO DO:
 # MAGIC Use [data loading functions](https://www.notion.so/datasentics/Data-loading-functions-e6f89bfd2c49473f8fde8bf25f6580bd) to load your data
 
@@ -65,7 +64,7 @@ def load_data():
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### 5. Add timestamps
+# MAGIC #### 6. Add timestamps
 # MAGIC 
 # MAGIC 
 # MAGIC Feature store need a `timestamp` column to be able to register features. Learn more about why that is [here](https://www.notion.so/datasentics/Developing-features-with-time-windows-d2dde276e7b94ded9b4925fd4a6a2f08#2dc77d33bf534f598c3bf50113443b34)
@@ -89,7 +88,7 @@ def data_with_timestamps(df: DataFrame):
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### 6. Make windowed
+# MAGIC #### 7. Make windowed
 # MAGIC 
 # MAGIC To be able to develop features using time windows, we need to create an instance of the [WindowedDataFrame](https://www.notion.so/datasentics/Time-windows-helper-classes-and-functions-c10623ae913d42e0a60b268b264b45a1#0b77fbf96f4d4e6e91e8dd3f965dc3f7)
 # MAGIC 
@@ -112,7 +111,7 @@ def data_with_time_windows(wdf: tw.WindowedDataFrame):
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### 7. Develop features
+# MAGIC #### 8. Develop features
 # MAGIC 
 # MAGIC ##### TO DO:
 # MAGIC Define your feature using the [declarative style](https://www.notion.so/datasentics/Developing-features-with-time-windows-d2dde276e7b94ded9b4925fd4a6a2f08#138466f927e047899fbacddd5d8c4df6), register it using the `feature` decorator to be written into Feature store.
