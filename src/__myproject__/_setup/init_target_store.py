@@ -29,13 +29,13 @@ entity = dp.fs.get_entity()
 
 # MAGIC %md
 # MAGIC ## Create a database set up in config.yaml under `featurestorebundle.db_name`
-# MAGIC 
-# MAGIC **Optional TO DO:** change `dev_odap_feature_store` to your config value
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC create database if not exists dev_odap_feature_store
+@dp.notebook_function("%featurestorebundle.db_name%")
+def create_database(db_name: str):
+    print(f"create database if not exists {db_name}")
+    spark.sql(f"create database if not exists {db_name}")
 
 # COMMAND ----------
 
