@@ -6,8 +6,8 @@ parameters:
       cluster:
         job_cluster_key: "default_cluster"
         new_cluster:
-          spark_version: "9.1.x-scala2.12"
-          node_type_id: "Standard_DS3_v2"
+          spark_version: "10.4.x-scala2.12"
+          node_type_id: "Standard_D4a_v4"
           num_workers: 2
           spark_env_vars:
             APP_ENV: "%kernel.environment%"
