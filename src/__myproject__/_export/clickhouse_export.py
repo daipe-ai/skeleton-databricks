@@ -340,7 +340,12 @@ def compare_counts(df: DataFrame, table_names: dict, logger: Logger):
     else:
         raise Exception(f"Featurestore row count is not equal to export row count. Featurestore: {fs_count} | Clickhouse: {clickhouse_count}")
 
-%md ### Clean Checkpoint Dir
+
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Clean Checkpoint Dir
 
 # COMMAND ----------
 

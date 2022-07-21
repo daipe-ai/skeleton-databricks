@@ -33,7 +33,7 @@ entity = dp.fs.get_entity()
 # COMMAND ----------
 
 @dp.notebook_function("%featurestorebundle.db_name%")
-def create_database(db_name: str):
+def create_database(db_name: str, spark: SparkSession):
     print(f"create database if not exists {db_name}")
     spark.sql(f"create database if not exists {db_name}")
 
