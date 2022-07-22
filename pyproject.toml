@@ -11,6 +11,15 @@ authors = [
 # DBR 10.4 python
 python = "3.8.10"
 
+# Custom dependencies
+injecta = "0.10.*"
+databricks-bundle = "^1.3.1"
+datalake-bundle = "^1.2.2"
+daipe-core = "^1.4.3"
+feature-store-bundle = "2.5.0"
+p360-export = "^1.0.0"
+
+[tool.poetry.dev-dependencies]
 # DBR 10.4 dependencies
 pip = "21.0.1"
 setuptools = "52.0.0"
@@ -76,15 +85,7 @@ zipp = "3.4.1"
 importlib-metadata = "3.10.0"
 distro = "1.4.0"
 
-# Custom dependencies
-injecta = "0.10.*"
-databricks-bundle = "^1.3.1"
-datalake-bundle = "^1.2.2"
-daipe-core = "^1.4.3"
-feature-store-bundle = "2.5.0"
-p360-export = "^1.0.0"
-
-[tool.poetry.dev-dependencies]
+# Custom dev dependencies
 pyspark = {url = "https://daipe-packages.s3.eu-central-1.amazonaws.com/pyspark-3.2.0-py2.py3-none-any.whl"}
 delta-spark = {url = "https://daipe-packages.s3.eu-central-1.amazonaws.com/delta_spark-1.1.0-py3-none-any.whl"}
 poethepoet = ">=0.9.0,<1.0.0"
