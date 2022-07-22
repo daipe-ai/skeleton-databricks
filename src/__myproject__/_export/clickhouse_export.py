@@ -28,20 +28,6 @@ entity = dp.fs.get_entity()
 
 # COMMAND ----------
 
-@dp.notebook_function()
-def init_widgets(widgets: dp.Widgets):
-    widgets.add_text("config_url", "", "Config url")
-
-# COMMAND ----------
-
-@dp.notebook_function(dp.get_widget_value("config_url"))
-def load_config(config_url: str, logger: Logger, spark: SparkSession):
-    config = spark.read.json(config_url).collect()[0].asDict()
-    logger.info(f"Loaded config from {config_url}")
-    return config
-
-# COMMAND ----------
-
 @dp.notebook_function(os.environ["APP_ENV"])
 def get_table_names(current_env: str):
     return {
@@ -146,10 +132,9 @@ def check_ongoing_export(table_names: dict, dbutils: DBUtils, logger: Logger):
 
 # COMMAND ----------
 
-@dp.transformation(load_config, display=False)
-def features_to_export(config: dict, feature_store: dp.fs.FeatureStore):
-    features = config["params"].export_columns
-    return feature_store.get_latest(entity.name, features=features)
+@dp.transformation(display=False)
+def features_to_export(feature_store: dp.fs.FeatureStore):
+    return feature_store.get_latest(entity.name, skip_incomplete_rows=True)
 
 # COMMAND ----------
 
