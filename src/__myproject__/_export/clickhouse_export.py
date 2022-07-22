@@ -101,7 +101,7 @@ def upload_table_to_clickhouse(df: DataFrame, table_name: str, engine_type: str)
         .option("dbtable", table_name)
         .option("user", get_secrets.result["user"])
         .option("password", get_secrets.result["pass"])
-        .mode('Overwrite')
+        .mode('overwrite')
         .save())
 
 # COMMAND ----------
@@ -140,15 +140,27 @@ def features_to_export(feature_store: dp.fs.FeatureStore):
 
 @dp.transformation(features_to_export, display=False)
 def features_to_export_with_conversions(df: DataFrame):
-    return df.select(*[
-        f.col(c).cast("float") if ("double" in t or "decimal" in t) else f.col(c) for c, t in df.dtypes
-    ]).replace(float('nan'), None).checkpoint()
+    converted_features = []
+
+    for col, dtype in df.dtypes:
+        if dtype == "double" or "decimal" in dtype:
+            converted_features.append(f.col(col).cast("float"))
+            continue
+
+        if dtype == "boolean":
+            converted_features.append(f.col(col).cast("byte"))
+            continue
+
+        converted_features.append(f.col(col))
+
+
+    return df.select(*converted_features).replace(float('nan'), None).checkpoint()
 
 # COMMAND ----------
 
 @dp.transformation(features_to_export_with_conversions, display=False)
 def sampled_features(df: DataFrame):
-    return df.sample(0.01)
+    return df.sample(0.01).checkpoint()
 
 # COMMAND ----------
 
@@ -229,7 +241,7 @@ def generate_linear_bins_if_bin_count_exceeds_threshold(col: str, bin_count: int
     display=False
 )
 def integral_number_bins(df: DataFrame, bin_params: Box):
-    columns = [column for column, dtype in df.dtypes if dtype in ("boolean", "tinyint", "smallint", "int", "bigint")]
+    columns = [column for column, dtype in df.dtypes if dtype in ("tinyint", "smallint", "int", "bigint")]
     low_quantiles = get_low_quantiles(df, columns, bin_params.lower_percentile_percentage, bin_params.accuracy)
     high_quantiles = get_high_quantiles(df, columns, bin_params.higher_percentile_percentage, bin_params.accuracy, low_quantiles)
 
@@ -324,8 +336,6 @@ def compare_counts(df: DataFrame, table_names: dict, logger: Logger):
         logger.info(f"Featurestore row count equals to Clickhouse export row count ({fs_count})")
     else:
         raise Exception(f"Featurestore row count is not equal to export row count. Featurestore: {fs_count} | Clickhouse: {clickhouse_count}")
-
-
 
 # COMMAND ----------
 
