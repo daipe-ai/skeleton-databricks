@@ -138,6 +138,12 @@ def features_to_export(feature_store: dp.fs.FeatureStore):
 
 # COMMAND ----------
 
+@dp.transformation(display=False)
+def load_metadata(feature_store: dp.fs.FeatureStore):
+    return feature_store.get_metadata(entity.name)
+
+# COMMAND ----------
+
 @dp.transformation(features_to_export, display=False)
 def features_to_export_with_conversions(df: DataFrame):
     converted_features = []
@@ -152,7 +158,6 @@ def features_to_export_with_conversions(df: DataFrame):
             continue
 
         converted_features.append(f.col(col))
-
 
     return df.select(*converted_features).replace(float('nan'), None).checkpoint()
 
@@ -185,7 +190,7 @@ def make_bin_string(col: str, bin_count: int) -> Column:
 
 @dp.transformation(
     features_to_export_with_conversions,
-    "%daipeproject.export.bins%",
+    "%daipeproject.export.bins.numerical%",
     display=False
 )
 def floating_point_number_bins(df: DataFrame, bin_params: Box):
@@ -237,7 +242,7 @@ def generate_linear_bins_if_bin_count_exceeds_threshold(col: str, bin_count: int
 
 @dp.transformation(
     features_to_export_with_conversions,
-    "%daipeproject.export.bins%",
+    "%daipeproject.export.bins.numerical%",
     display=False
 )
 def integral_number_bins(df: DataFrame, bin_params: Box):
@@ -281,6 +286,44 @@ def generate_bins(fp_bins: DataFrame, int_bins: DataFrame):
 
 # COMMAND ----------
 
+@dp.notebook_function(load_metadata)
+def get_categorical_features(df: DataFrame):
+    return [row.feature for row in df.collect() if row.is_feature and row.type == "categorical"]
+
+# COMMAND ----------
+
+def get_category_counts(df: DataFrame, feature: str) -> dict:
+    return df.select(feature).na.drop().groupBy(feature).count().select(f.map_from_entries(f.collect_list(f.struct(feature, "count")))).collect()[0][0]
+
+# COMMAND ----------
+
+@dp.transformation(sampled_features, get_categorical_features, "%daipeproject.export.bins.categorical%", display=False)
+def reduce_categories_in_sampled_features(df: DataFrame, categorical_features: list, bin_params: Box):
+    threshold = 1 - bin_params.reduction_percentage
+
+    for feature in categorical_features:
+        category_counts = get_category_counts(df, feature)
+        number_of_categories = len(category_counts)
+        total_count = sum(category_counts.values())
+        percentage_count = 0
+        categories_under_threshold = []
+
+        if number_of_categories <= bin_params.minimum_categories_to_apply_reduction:
+            continue
+
+        for category, count in sorted(category_counts.items(), key=lambda item: item[1], reverse=True):
+            if percentage_count < threshold:
+                categories_under_threshold.append(category)
+
+            category_pctg = count * 100 / total_count
+            percentage_count += category_pctg
+
+        df = df.withColumn(feature, f.when(f.col(feature).isin(categories_under_threshold) | f.col(feature).isNull(), f.col(feature)).otherwise("other"))
+
+    return df.checkpoint()
+
+# COMMAND ----------
+
 # MAGIC %md ### Write tables
 
 # COMMAND ----------
@@ -292,7 +335,7 @@ def write_features(df: DataFrame, table_names: dict, logger: Logger):
 
 # COMMAND ----------
 
-@dp.notebook_function(sampled_features, get_table_names)
+@dp.notebook_function(reduce_categories_in_sampled_features, get_table_names)
 def write_sampled_features(df: DataFrame, table_names: dict, logger: Logger):
     logger.info("Writing sampled features to ClickHouse database.")
     upload_table_to_clickhouse(df, table_names["sampled_temp"], "aggregating_merge_tree")

@@ -13,10 +13,14 @@ parameters:
         host:
         port:
       bins:
-        lower_percentile_percentage: 0.05
-        higher_percentile_percentage: 0.95
-        bin_count: 8
-        accuracy: 100
+        numerical:
+          lower_percentile_percentage: 0.05
+          higher_percentile_percentage: 0.95
+          bin_count: 8
+          accuracy: 100
+        categorical:
+          reduction_percentage: 0.1
+          minimum_categories_to_apply_reduction: 20
 
   featurestorebundle:
     db_name: '%kernel.environment%_odap_feature_store'
