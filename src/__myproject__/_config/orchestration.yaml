@@ -8,6 +8,8 @@ parameters:
       checkpoint_before_merge: False
       checkpoint_after_join: False
       num_parallel: 8
+      post_actions:
+        - '@p360_interface_bundle.featurestore.post_actions.metadata_adjustment.CreateMetadataJsonFiles'
       stages:
       #  stage1:
       #    - '/Repos/dependencies/<repo_name>/src/<module_name>/path/to/notebook'
