@@ -9,20 +9,6 @@ parameters:
     checkpoint:
       dir: 'dbfs:/tmp/checkpoints'
 
-    export:
-      clickhouse:
-        host:
-        port:
-      bins:
-        numerical:
-          lower_percentile_percentage: 0.05
-          higher_percentile_percentage: 0.95
-          bin_count: 8
-          accuracy: 100
-        categorical:
-          reduction_percentage: 0.1
-          minimum_categories_to_apply_reduction: 20
-
   featurestorebundle:
     db_name: '%kernel.environment%_odap_feature_store'
     base_path: '%daipeproject.datalake.base_path%/feature_store'
@@ -57,3 +43,13 @@ parameters:
               feature_template: master_feature
             category:
               # insert a list of categories and subcategories
+    clickhouse:
+      host:
+      port: 8123
+      credentials:
+        user:
+          secret_scope: unit-kv
+          secret_key: clickhouse-user
+        password:
+          secret_scope: unit-kv
+          secret_key: clickhouse-pass
