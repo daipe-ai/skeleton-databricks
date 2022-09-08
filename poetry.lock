@@ -306,7 +306,7 @@ pyfony-bundles = ">=0.4.0,<0.5.0"
 
 [[package]]
 name = "databricks-bundle"
-version = "1.4.10"
+version = "1.4.12"
 description = "Databricks runtime support for the Daipe framework"
 category = "main"
 optional = false
@@ -485,7 +485,7 @@ protobuf = ">=3.7.0"
 
 [[package]]
 name = "feature-store-bundle"
-version = "2.7.2"
+version = "2.8.0"
 description = "Feature Store for the Daipe AI Platform"
 category = "main"
 optional = false
@@ -493,7 +493,7 @@ python-versions = ">=3.8,<4.0"
 
 [package.dependencies]
 daipe-core = ">=1.4.2,<2.0.0"
-databricks-bundle = ">=1.4.10,<2.0.0"
+databricks-bundle = ">=1.4.12,<2.0.0"
 pyfony-bundles = ">=0.4.4,<0.5.0"
 
 [[package]]
@@ -1979,7 +1979,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.10"
-content-hash = "e7f3c5683b11dc06b5d6f5d500b4efd2fe7c532edbbb74cd1e9dad09695d3731"
+content-hash = "0e56abae7708c20a3184e33848c97a4453dcfdac1b08f96d2e4ae5fc75e90740"
 
 [metadata.files]
 aiohttp = []
