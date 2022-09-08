@@ -99,6 +99,7 @@ cached-property = "^1.5.2"
 
 [pyfony.bootstrap]
 root_module_name_search_exclude=["daipe"]
+allowed_environments=["dev", "test", "prod", "rc"]
 
 [tool.pylint.basic]
 const-naming-style = "snake_case"

@@ -1,0 +1,16 @@
+imports:
+  - config.yaml
+
+parameters:
+  daipeproject:
+    databricks:
+      address: 'https://adb-7911492257755731.11.azuredatabricks.net'
+      repo:
+        base_dir: "/Repos/{repo_name}/latest_tag"
+      job:
+        suffix: "{repo_name}"
+
+  datalakebundle:
+    notebook:
+      display:
+        enabled: False
