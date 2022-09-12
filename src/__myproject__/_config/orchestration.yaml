@@ -11,7 +11,7 @@ parameters:
       post_actions:
         - '@p360_interface_bundle.featurestore.post_actions.metadata_adjustment.CreateMetadataJsonFiles'
       stages:
-      #  stage1:
-      #    - '/Repos/dependencies/<repo_name>/src/<module_name>/path/to/notebook'
+        stage1:
+          - '/Repos/dependencies/<repo_name>/src/<module_name>/path/to/notebook'
       #  stage2:
       #    - '%module_path%/path/to/notebook'
