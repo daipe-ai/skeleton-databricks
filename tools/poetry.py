@@ -4,7 +4,7 @@
 
 # COMMAND ----------
 
-# MAGIC %run ../bootstrap/bootstrap_base
+# MAGIC %run ../bootstrap/install_benvy
 
 # COMMAND ----------
 
