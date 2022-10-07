@@ -25,9 +25,3 @@ if not package:
 # COMMAND ----------
 
 # MAGIC %poetry $poetry_action $package
-
-# COMMAND ----------
-
-from poetry_utils.unify_imports import unify_imports
-
-unify_imports()
