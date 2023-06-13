@@ -41,7 +41,7 @@ python-versions = "*"
 name = "appnope"
 version = "0.1.2"
 description = "Disable App Nap on macOS >= 10.9"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -57,6 +57,20 @@ python-versions = ">=3.6.2"
 lazy-object-proxy = ">=1.4.0"
 typing-extensions = {version = ">=3.10", markers = "python_version < \"3.10\""}
 wrapt = ">=1.11,<1.14"
+
+[[package]]
+name = "asttokens"
+version = "2.2.1"
+description = "Annotate AST trees with source code positions"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+six = "*"
+
+[package.extras]
+test = ["astroid", "pytest"]
 
 [[package]]
 name = "async-timeout"
@@ -84,7 +98,7 @@ tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>
 name = "backcall"
 version = "0.2.0"
 description = "Specifications for callback functions passed in to an API"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -181,17 +195,17 @@ pycparser = "*"
 name = "chardet"
 version = "4.0.0"
 description = "Universal encoding detector for Python 2 and 3"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "charset-normalizer"
-version = "2.1.0"
+version = "2.0.12"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
 category = "main"
 optional = false
-python-versions = ">=3.6.0"
+python-versions = ">=3.5.0"
 
 [package.extras]
 unicode_backport = ["unicodedata2"]
@@ -389,7 +403,7 @@ nbconvert = ">=5.6"
 name = "decorator"
 version = "5.0.6"
 description = "Decorators for Humans"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 
@@ -432,6 +446,23 @@ type = "url"
 url = "https://daipe-packages.s3.eu-central-1.amazonaws.com/delta_spark-1.1.0-py3-none-any.whl"
 
 [[package]]
+name = "dependency-injector"
+version = "4.41.0"
+description = "Dependency injection framework for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+six = ">=1.7.0,<=1.16.0"
+
+[package.extras]
+aiohttp = ["aiohttp"]
+flask = ["flask"]
+pydantic = ["pydantic"]
+yaml = ["pyyaml"]
+
+[[package]]
 name = "distlib"
 version = "0.3.4"
 description = "Distribution utilities"
@@ -454,6 +485,17 @@ description = "Discover and load entry points from installed packages."
 category = "dev"
 optional = false
 python-versions = ">=2.7"
+
+[[package]]
+name = "executing"
+version = "1.2.0"
+description = "Get the currently executing AST node of a frame, and other information"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+tests = ["asttokens", "pytest", "littleutils", "rich"]
 
 [[package]]
 name = "facebook-business"
@@ -712,11 +754,11 @@ test = ["pytest (!=5.3.4)", "pytest-cov", "flaky", "nose"]
 
 [[package]]
 name = "ipython"
-version = "7.22.0"
+version = "8.8.0"
 description = "IPython: Productive Interactive Computing"
-category = "dev"
+category = "main"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 
 [package.dependencies]
 appnope = {version = "*", markers = "sys_platform == \"darwin\""}
@@ -724,28 +766,32 @@ backcall = "*"
 colorama = {version = "*", markers = "sys_platform == \"win32\""}
 decorator = "*"
 jedi = ">=0.16"
+matplotlib-inline = "*"
 pexpect = {version = ">4.3", markers = "sys_platform != \"win32\""}
 pickleshare = "*"
-prompt-toolkit = ">=2.0.0,<3.0.0 || >3.0.0,<3.0.1 || >3.0.1,<3.1.0"
-pygments = "*"
-traitlets = ">=4.2"
+prompt-toolkit = ">=3.0.11,<3.1.0"
+pygments = ">=2.4.0"
+stack-data = "*"
+traitlets = ">=5"
 
 [package.extras]
-all = ["Sphinx (>=1.3)", "ipykernel", "ipyparallel", "ipywidgets", "nbconvert", "nbformat", "nose (>=0.10.1)", "notebook", "numpy (>=1.16)", "pygments", "qtconsole", "requests", "testpath"]
-doc = ["Sphinx (>=1.3)"]
+all = ["black", "ipykernel", "setuptools (>=18.5)", "sphinx (>=1.3)", "sphinx-rtd-theme", "docrepr", "matplotlib", "stack-data", "pytest (<7)", "typing-extensions", "pytest (<7.1)", "pytest-asyncio", "testpath", "nbconvert", "nbformat", "ipywidgets", "notebook", "ipyparallel", "qtconsole", "curio", "matplotlib (!=3.2.0)", "numpy (>=1.20)", "pandas", "trio"]
+black = ["black"]
+doc = ["ipykernel", "setuptools (>=18.5)", "sphinx (>=1.3)", "sphinx-rtd-theme", "docrepr", "matplotlib", "stack-data", "pytest (<7)", "typing-extensions", "pytest (<7.1)", "pytest-asyncio", "testpath"]
 kernel = ["ipykernel"]
 nbconvert = ["nbconvert"]
 nbformat = ["nbformat"]
-notebook = ["notebook", "ipywidgets"]
+notebook = ["ipywidgets", "notebook"]
 parallel = ["ipyparallel"]
 qtconsole = ["qtconsole"]
-test = ["nose (>=0.10.1)", "requests", "testpath", "pygments", "nbformat", "ipykernel", "numpy (>=1.16)"]
+test = ["pytest (<7.1)", "pytest-asyncio", "testpath"]
+test_extra = ["pytest (<7.1)", "pytest-asyncio", "testpath", "curio", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.20)", "pandas", "trio"]
 
 [[package]]
 name = "ipython-genutils"
 version = "0.2.0"
 description = "Vestigial utilities from IPython"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -767,7 +813,7 @@ plugins = ["setuptools"]
 name = "jedi"
 version = "0.17.2"
 description = "An autocompletion tool for Python that can be used for text editors."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
@@ -958,6 +1004,17 @@ pyparsing = ">=2.2.1"
 python-dateutil = ">=2.7"
 
 [[package]]
+name = "matplotlib-inline"
+version = "0.1.6"
+description = "Inline Matplotlib backend for Jupyter"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.dependencies]
+traitlets = "*"
+
+[[package]]
 name = "mccabe"
 version = "0.6.1"
 description = "McCabe checker, plugin for flake8"
@@ -1044,7 +1101,7 @@ test = ["pytest (>=6.2)", "pytest-cov (>=2.12)", "codecov (>=2.1)"]
 
 [[package]]
 name = "numpy"
-version = "1.20.1"
+version = "1.20.3"
 description = "NumPy is the fundamental package for array computing with Python."
 category = "main"
 optional = false
@@ -1073,25 +1130,22 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "p360-export"
-version = "1.3.0"
+version = "1.5.5"
 description = "Persona360 data export"
 category = "main"
 optional = false
 python-versions = ">=3.8.10,<4.0.0"
 
 [package.dependencies]
-console-bundle = "0.5.1"
-daipe-core = ">=1.2,<2.0"
-databricks-bundle = ">=1.4.5,<2.0.0"
+dependency-injector = ">=4.40.0,<5.0.0"
 facebook-business = ">=13.0.0,<14.0.0"
-feature-store-bundle = ">=2.5.1,<3.0.0"
 google-ads = ">=16.0.0,<17.0.0"
+ipython = ">=8.7.0,<9.0.0"
 jsonschema = ">=4.4.0,<5.0.0"
+pandas = ">=1.5.2,<2.0.0"
 paramiko = ">=2.11.0,<3.0.0"
-pyarrow = "4.0.0"
-pyfony-bundles = "0.4.4"
-pyfony-core = ">=0.8.0,<0.9.0"
-Salesforce-FuelSDK = ">=1.3.0,<2.0.0"
+pyarrow = ">=10.0.1,<11.0.0"
+Salesforce-FuelSDK-Sans = ">=1.3.0,<2.0.0"
 
 [[package]]
 name = "p360-interface-bundle"
@@ -1121,19 +1175,19 @@ pyparsing = ">=2.0.2,<3"
 
 [[package]]
 name = "pandas"
-version = "1.2.4"
+version = "1.5.3"
 description = "Powerful data structures for data analysis, time series, and statistics"
 category = "main"
 optional = false
-python-versions = ">=3.7.1"
+python-versions = ">=3.8"
 
 [package.dependencies]
-numpy = ">=1.16.5"
-python-dateutil = ">=2.7.3"
-pytz = ">=2017.3"
+numpy = {version = ">=1.20.3", markers = "python_version < \"3.10\""}
+python-dateutil = ">=2.8.1"
+pytz = ">=2020.1"
 
 [package.extras]
-test = ["pytest (>=5.0.1)", "pytest-xdist", "hypothesis (>=3.58)"]
+test = ["hypothesis (>=5.5.3)", "pytest (>=6.0)", "pytest-xdist (>=1.31)"]
 
 [[package]]
 name = "pandocfilters"
@@ -1167,12 +1221,12 @@ invoke = ["invoke (>=1.3)"]
 name = "parso"
 version = "0.7.0"
 description = "A Python Parser"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [package.extras]
-testing = ["pytest (>=3.0.7)", "docopt"]
+testing = ["docopt", "pytest (>=3.0.7)"]
 
 [[package]]
 name = "pastel"
@@ -1198,7 +1252,7 @@ six = "*"
 name = "pexpect"
 version = "4.8.0"
 description = "Pexpect allows easy control of interactive console applications."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -1209,7 +1263,7 @@ ptyprocess = ">=0.5"
 name = "pickleshare"
 version = "0.7.5"
 description = "Tiny 'shelve'-like database with concurrency support"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -1261,7 +1315,7 @@ tomlkit = ">=0.6.0,<1.0.0"
 name = "prompt-toolkit"
 version = "3.0.17"
 description = "Library for building powerful interactive command lines in Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6.1"
 
@@ -1297,9 +1351,20 @@ six = ">=1.9"
 name = "ptyprocess"
 version = "0.7.0"
 description = "Run a subprocess in a pseudo terminal"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "pure-eval"
+version = "0.2.2"
+description = "Safely evaluate AST nodes without side effects"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+tests = ["pytest"]
 
 [[package]]
 name = "py"
@@ -1319,11 +1384,11 @@ python-versions = "*"
 
 [[package]]
 name = "pyarrow"
-version = "4.0.0"
+version = "10.0.1"
 description = "Python library for Apache Arrow"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
 numpy = ">=1.16.6"
@@ -1418,7 +1483,7 @@ cffi = ">=1.4.0"
 name = "pygments"
 version = "2.8.1"
 description = "Pygments is a syntax highlighting package written in Python."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 
@@ -1589,21 +1654,21 @@ py = {version = "*", markers = "implementation_name === \"pypy\""}
 
 [[package]]
 name = "requests"
-version = "2.25.1"
+version = "2.28.0"
 description = "Python HTTP for Humans."
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+python-versions = ">=3.7, <4"
 
 [package.dependencies]
 certifi = ">=2017.4.17"
-chardet = ">=3.0.2,<5"
-idna = ">=2.5,<3"
+charset-normalizer = ">=2.0.0,<2.1.0"
+idna = ">=2.5,<4"
 urllib3 = ">=1.21.1,<1.27"
 
 [package.extras]
-security = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)"]
-socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
+socks = ["PySocks (>=1.5.6,!=1.5.7)"]
+use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
 
 [[package]]
 name = "requests-oauthlib"
@@ -1655,17 +1720,17 @@ python-versions = "*"
 botocore = ">=1.12.36,<2.0a.0"
 
 [[package]]
-name = "salesforce-fuelsdk"
-version = "1.3.0"
+name = "salesforce-fuelsdk-sans"
+version = "1.3.1"
 description = "Salesforce Marketing Cloud Fuel SDK for Python"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3"
 
 [package.dependencies]
-pyjwt = ">=1.5.3"
-requests = ">=2.18.4"
-suds-jurko = "0.6"
+PyJWT = ">=2.4.0"
+requests = ">=2.28.0"
+suds-community = ">=1.1.1"
 
 [[package]]
 name = "scikit-learn"
@@ -1773,6 +1838,22 @@ distro = "*"
 requests = ">=1.1.0"
 
 [[package]]
+name = "stack-data"
+version = "0.6.2"
+description = "Extract data from python stack frames and tracebacks for informative displays"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+asttokens = ">=2.1.0"
+executing = ">=1.2.0"
+pure-eval = "*"
+
+[package.extras]
+tests = ["pytest", "typeguard", "pygments", "littleutils", "cython"]
+
+[[package]]
 name = "statsmodels"
 version = "0.12.2"
 description = "Statistical computations and models for Python"
@@ -1792,12 +1873,12 @@ develop = ["cython (>=0.29)"]
 docs = ["sphinx", "nbconvert", "jupyter-client", "ipykernel", "matplotlib", "nbformat", "numpydoc", "pandas-datareader"]
 
 [[package]]
-name = "suds-jurko"
-version = "0.6"
-description = "Lightweight SOAP client (Jurko's fork)"
+name = "suds-community"
+version = "1.1.2"
+description = "Lightweight SOAP client (community fork)"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.5"
 
 [[package]]
 name = "tabulate"
@@ -1868,7 +1949,7 @@ python-versions = ">= 3.5"
 name = "traitlets"
 version = "5.0.5"
 description = "Traitlets Python configuration system"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -1921,7 +2002,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 name = "wcwidth"
 version = "0.2.5"
 description = "Measures the displayed width of unicode strings in a terminal"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -1979,7 +2060,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.10"
-content-hash = "8e2f0a64241573e58210f03874c2b95dbf767734feb6e15f7c6a914c14737d34"
+content-hash = "016af63a0a1972da043fdb627b703274e6cf18b3458b8a2326b829d55bda7268"
 
 [metadata.files]
 aiohttp = []
@@ -1987,6 +2068,7 @@ aiosignal = []
 appdirs = []
 appnope = []
 astroid = []
+asttokens = []
 async-timeout = []
 attrs = []
 backcall = []
@@ -2018,9 +2100,11 @@ decorator = []
 deepdiff = []
 defusedxml = []
 delta-spark = []
+dependency-injector = []
 distlib = []
 distro = []
 entrypoints = []
+executing = []
 facebook-business = []
 facets-overview = []
 feature-store-bundle = []
@@ -2057,6 +2141,7 @@ lineage-bundle = []
 logger-bundle = []
 markupsafe = []
 matplotlib = []
+matplotlib-inline = []
 mccabe = []
 mistune = []
 multidict = []
@@ -2085,6 +2170,7 @@ prompt-toolkit = []
 proto-plus = []
 protobuf = []
 ptyprocess = []
+pure-eval = []
 py = []
 py4j = []
 pyarrow = []
@@ -2116,7 +2202,7 @@ requests-oauthlib = []
 requests-unixsocket = []
 rsa = []
 s3transfer = []
-salesforce-fuelsdk = []
+salesforce-fuelsdk-sans = []
 scikit-learn = []
 scipy = []
 seaborn = []
@@ -2124,8 +2210,9 @@ simpleeval = []
 six = []
 sqlalchemy = []
 ssh-import-id = []
+stack-data = []
 statsmodels = []
-suds-jurko = []
+suds-community = []
 tabulate = []
 tenacity = []
 testpath = []
